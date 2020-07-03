@@ -15,17 +15,7 @@
 })
 
 
-// PSEUDOCODE **********************
-// HERE AND NOW
-// eventListener on button
-// callback function
-    // get coordinates from user's geolocation
-    // get current time
-    // pass info as parameters to restaurant fetch request
-    // pass info as parameters to events fetch request
 
-
-// CUSTOM SEARCH
 // 
 
 
