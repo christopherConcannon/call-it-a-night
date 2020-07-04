@@ -18,7 +18,23 @@ const favsArr = localStorage.getItem('faves') || [];
 function getUserCoords() {
   console.log('Here and now button clicked')
   // navigator.geolocation.getCurrentPosition();
+  function success(pos) {
+      var crd = pos.coords;
+
+      console.log('Your current position is:');
+      console.log(`Latitude : ${crd.latitude}`);
+      console.log(`Longitude: ${crd.longitude}`);
+      console.log(`More or less ${crd.accuracy} meters.`);
+  };
+
+   // Creates Warning User denied Geolocation
+  function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
+  navigator.geolocation.getCurrentPosition(success, error,);
   // current moment object
+    var currentTime = moment().format('hh:mm:ss');
+    console.log(currentTime)
   // coordObj = {
   //   lat: 'lat',
   //   lon: 'lon',
@@ -29,7 +45,6 @@ function getUserCoords() {
   // zomatoFetch(coordObj);
   // tixMasterFetch(coordObj);
 }
-
 // GET SELECTED COORDINATES AND DATE/TIME
 function getCustomCoords() {
   console.log('Custom search form submitted');
