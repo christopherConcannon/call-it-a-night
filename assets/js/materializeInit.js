@@ -14,7 +14,9 @@
     });
 })
 
-
+// Global variable to grab the Current Time
+var currentTime = moment().format('hh:mm:ss');
+console.log(currentTime)
 
 
 
