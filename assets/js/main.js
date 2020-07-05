@@ -1,5 +1,6 @@
 // CACHE PAGE ELEMENTS
-const landingEl = document.querySelector('#landing-wrapper');
+const landingContainerEl = document.querySelector('#landing-wrapper');
+const resultsContainerEl = document.querySelector('#results-wrapper');
 const hereNowBtnEl = document.querySelector('#here-now');
 const searchFormEl = document.querySelector('#search');
 const searchFormSubmitBtnEl = document.querySelector('#search-form-submit');
@@ -7,89 +8,111 @@ const cityInputEl = document.querySelector('#city');
 const dateInputEl = document.querySelector('#date');
 const timeInputEl = document.querySelector('#time');
 
+
+
 // GLOBAL VARS
-let lat;
-let lon;
-let date;
-let time;
+	coordObj = {
+	  lat: 0,
+	  lon: 0,
+	  date: '',
+	  time: ''
+	}
 const favsArr = localStorage.getItem('faves') || [];
 
 //  GET USER CURRENT LAT/LON AND CREATE CURRENT MOMENT OBJ
 function getUserCoords() {
-  console.log('Here and now button clicked')
-  // navigator.geolocation.getCurrentPosition();
-  // current moment object
-  // coordObj = {
-  //   lat: 'lat',
-  //   lon: 'lon',
-  //   date: 'moment-date', 
-  //   time: 'moment-time'
+	console.log('Here and now button clicked');
+	// navigator.geolocation.getCurrentPosition() {
+    // ....
+    // coordObj.lat = pos.coords.latitude;
+    // coordObj.lon = pos.coords.longitude;
   // }
-  // call fetch functions with coord object
-  // zomatoFetch(coordObj);
-  // tixMasterFetch(coordObj);
+  // current moment object
+  // coordObj.date = moment date
+  // coordObj.time = moment time
+  
+	// call function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions
+	mediateFetches();
 }
 
 // GET SELECTED COORDINATES AND DATE/TIME
 function getCustomCoords() {
   console.log('Custom search form submitted');
-  // coordObj = {
-  //   lat: 'lat',
-  //   lon: 'lon',
-  //   date: 'moment-date', 
-  //   time: 'moment-time'
-  // }
-  // zomatoFetch(coordObj);
-  // tixMasterFetch(coordObj);
+  // GET FORM FIELD INPUT FOR CITY
+  // fetch request to OpenCage API
+  // coordObj.lat = pos.coords.latitude;
+  // coordObj.lon = pos.coords.longitude;
+  
+  // GET FORM FIELD INPUTS FOR DATE AND TIME
+  // current moment object
+  // coordObj.date = moment date
+  // coordObj.time = moment time
+  
+	// call function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions
+	mediateFetches();
+
 }
 
-function zomatoFetch(coords) {
+function mediateFetches() {
+  // get results container on page so it will be ready when data is returned
+  revealResultsContainer();
+  // call individual fetch functions
+	// zomatoFetch();
+	// tixMasterFetch();
+}
 
+function revealResultsContainer() {
+  landingContainerEl.className = 'hide';
+  resultsContainerEl.classList = 'results-wrapper center';
+  // initialize Materialize Carousel
+  M.Carousel.init($('.carousel'));
+}
+
+function zomatoFetch() {
+  // fetch from Zomato, passing in coordObj from global scope
+  
+  // pass API data to display function
+	// displayRestauResults(data);
 }
 
 function tixMasterFetch(coords) {
-
+    // fetch from Tix Master, passing in coordObj from global scope
+    
+    // pass API data to display function
+    // displayEventResults(data);
 }
 
 function displayRestauResults() {
-  // build cards and append to DOM
-  // data-id attr for fav tracking
-  // add event listener to fav icon...callbck saveFav()
-
-} 
-
-function displayEventResults() {
-  // build cards and append to DOM
-  // data-id attr for fav tracking
-  // add event listener to fav icon...callback saveFav()
+	// populate cards and append to DOM
+	// set data-id attr for fav tracking
+	// add event listener to fav icon...callbck addToFavs()
 }
 
-function displayFavs() {
-  for (let i = 0; i < favsArr.length; i++) {
-    // build cards
-  }
+function displayEventResults() {
+	// popuate cards and append to DOM
+	// set data-id attr for fav tracking
+	// add event listener to fav icon...callback addToFavs()
 }
 
 function addToFavs() {
-  favsArr.push(cardObj)
-  localStorage.setItem('faves', favsArr);
-  displayFavs();
+	// favsArr.push(cardEl.data-id === x)
+	// localStorage.setItem('faves', favsArr);
+	// displayFavs();
 }
 
-
-
-
-
-
-
-
-
+function displayFavs() {
+	for (let i = 0; i < favsArr.length; i++) {
+		// populate cards
+		// style the icon to show its selected (heart filled in)
+		// event listener on icon to remove from favs
+	}
+}
 
 
 
 // ADD EVENT LISTENERS
 hereNowBtnEl.addEventListener('click', getUserCoords);
-// should refactor to fire on form submit, but need to adjust form styles
+// should refactor to fire on form submit for accessibility, but need to adjust form styles
 searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
 // event listener for fav icon
-favIconEl.addEventListener('click', addToFavs);
+// favIconEl.addEventListener('click', addToFavs);
