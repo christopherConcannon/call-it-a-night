@@ -43,3 +43,7 @@ h1 {
   width: 400px;
   height: 400px;
 }
+/* not working */
+.carousel i.material-icon.fav {
+  color: #ffab40 !important;
+}
