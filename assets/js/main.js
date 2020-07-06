@@ -214,7 +214,8 @@ function zomatoFetch() {
 }
 
 function tixMasterFetch(coords) {
-	// fetch from Tix Master, passing in coordObj from global scope
+  // fetch from Tix Master, passing in coordObj from global scope
+  fetch("https://app.ticketmaster.com/discovery/v2/events.json?size=1&apikey=wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx");
 	// pass API data to display function
 	// displayEventResults(data);
 }
