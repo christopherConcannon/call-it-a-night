@@ -184,10 +184,13 @@ function getUserCoords() {
 
 // GET SELECTED COORDINATES AND DATE/TIME
 function getCustomCoords() {
+	var apiKey = '0c839a0f2d5a4c3192c2c08f5fd44dfc'
+
   // // GET FORM FIELD INPUT FOR CITY
-  // const cityInput = 
+   const cityInput = document.getElementById("#city")
   // // fetch request to OpenCage API
-  // const url = `${cityInput}`
+   const url = 'https://api.opencagedata.com/geocode/v1/json?q=' + `${cityInput}` + '&key=0c839a0f2d5a4c3192c2c08f5fd44dfc'
+   console.log(url)
   
 
 
