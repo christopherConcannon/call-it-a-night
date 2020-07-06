@@ -217,7 +217,6 @@ function zomatoFetch(coordObj) {
 				res.json().then(function(data) {
 					const restauDataArr = buildRestauData(data);
 					// pass API data to display function
-					// displayRestauResults(data);
 					displayRestauResults(restauDataArr);
 				});
 			} else {
@@ -229,13 +228,21 @@ function zomatoFetch(coordObj) {
 			console.error('Error:', error);
 		});
 
-	// TODO -- CREATE OBJECT TO PASS TO DISPLAY FUNCTION
+	// CREATE OBJECT TO PASS TO DISPLAY FUNCTION
 	function buildRestauData(data) {
 		let nearbyRestaurants = data.nearby_restaurants;
 		console.log('getZomatoData -> nearbyRestaurants', nearbyRestaurants);
 		let restauDataArr = [];
+
 		for (var i = 0; i <= 7; i++) {
 			let restauObj = {};
+			// let restauLat = nearbyRestaurants[i].restaurant.location.latitude;
+			// let restauLon = nearbyRestaurants[i].restaurant.location.longitude;
+
+			let address = nearbyRestaurants[i].restaurant.location.address;
+			let encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
+			// 11940 Manchaca Road, Austin 78748
+
 			restauObj.name = nearbyRestaurants[i].restaurant.name;
 			restauObj.img =
 				nearbyRestaurants[i].restaurant.thumb !== ''
@@ -243,23 +250,12 @@ function zomatoFetch(coordObj) {
 					: './assets/images/restau-placeholder-img.jpg';
 			restauObj.cuisine = nearbyRestaurants[i].restaurant.cuisines;
 			restauObj.site = nearbyRestaurants[i].restaurant.url;
-			restauObj.location = nearbyRestaurants[i].restaurant.location.address;
+			restauObj.location = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+			// restauObj.location = `https://www.google.com/maps/dir/?api=1&destination=${restauLat},${restauLon}`;
 			restauDataArr.push(restauObj);
 		}
 		return restauDataArr;
 	}
-
-	// const restauData = [
-	// 	{
-	// 		img      :
-	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-	// 		name     : 'Franklin Barbecue',
-	// 		cuisine  : 'BBQ',
-	// 		site     :
-	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-	// 		location :
-	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-	// 	},
 }
 
 // fetch from Tix Master, passing in coordObj
@@ -305,81 +301,6 @@ function tixMasterFetch(coordObj) {
 }
 
 function displayRestauResults(restauData) {
-	// dummy content for development
-
-	// const restauData = [
-	// 	{
-	// 		img      :
-	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-	// 		name     : 'Franklin Barbecue',
-	// 		cuisine  : 'BBQ',
-	// 		site     :
-	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-	// 		location :
-	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-	// 	},
-	// 	{
-	// 		img      :
-	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-	// 		name     : 'Franklin Barbecue',
-	// 		cuisine  : 'BBQ',
-	// 		site     :
-	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-	// 		location :
-	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-	// 	},
-	// 	{
-	// 		img      :
-	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-	// 		name     : 'Franklin Barbecue',
-	// 		cuisine  : 'BBQ',
-	// 		site     :
-	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-	// 		location :
-	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-	// 	},
-	// 	{
-	// 		img      :
-	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-	// 		name     : 'Franklin Barbecue',
-	// 		cuisine  : 'BBQ',
-	// 		site     :
-	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-	// 		location :
-	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-	// 	},
-	// 	{
-	// 		img      :
-	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-	// 		name     : 'Franklin Barbecue',
-	// 		cuisine  : 'BBQ',
-	// 		site     :
-	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-	// 		location :
-	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-	// 	},
-	// 	{
-	// 		img      :
-	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-	// 		name     : 'Franklin Barbecue',
-	// 		cuisine  : 'BBQ',
-	// 		site     :
-	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-	// 		location :
-	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-	// 	},
-	// 	{
-	// 		img      :
-	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-	// 		name     : 'Franklin Barbecue',
-	// 		cuisine  : 'BBQ',
-	// 		site     :
-	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-	// 		location :
-	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-	// 	}
-	// ];
-
 	// populate cards
 
 	// first card
