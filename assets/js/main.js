@@ -215,8 +215,10 @@ function zomatoFetch(coordObj) {
 		.then(function(res) {
 			if (res.ok) {
 				res.json().then(function(data) {
-					let nearbyRestaurants = data.nearby_restaurants;
-					console.log('getZomatoData -> nearbyRestaurants', nearbyRestaurants);
+					const restauDataArr = buildRestauData(data);
+					// pass API data to display function
+					// displayRestauResults(data);
+					displayRestauResults(restauDataArr);
 				});
 			} else {
 				let msg = `Error: ${res.statusText}`;
@@ -228,10 +230,36 @@ function zomatoFetch(coordObj) {
 		});
 
 	// TODO -- CREATE OBJECT TO PASS TO DISPLAY FUNCTION
+	function buildRestauData(data) {
+		let nearbyRestaurants = data.nearby_restaurants;
+		console.log('getZomatoData -> nearbyRestaurants', nearbyRestaurants);
+		let restauDataArr = [];
+		for (var i = 0; i <= 7; i++) {
+			let restauObj = {};
+			restauObj.name = nearbyRestaurants[i].restaurant.name;
+			restauObj.img =
+				nearbyRestaurants[i].restaurant.thumb !== ''
+					? nearbyRestaurants[i].restaurant.thumb
+					: './assets/images/restau-placeholder-img.jpg';
+			restauObj.cuisine = nearbyRestaurants[i].restaurant.cuisines;
+			restauObj.site = nearbyRestaurants[i].restaurant.url;
+			restauObj.location = nearbyRestaurants[i].restaurant.location.address;
+			restauDataArr.push(restauObj);
+		}
+		return restauDataArr;
+	}
 
-	// pass API data to display function
-	// displayRestauResults(data);
-	displayRestauResults();
+	// const restauData = [
+	// 	{
+	// 		img      :
+	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+	// 		name     : 'Franklin Barbecue',
+	// 		cuisine  : 'BBQ',
+	// 		site     :
+	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+	// 		location :
+	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+	// 	},
 }
 
 // fetch from Tix Master, passing in coordObj
@@ -276,81 +304,81 @@ function tixMasterFetch(coordObj) {
 	displayEventResults();
 }
 
-function displayRestauResults() {
+function displayRestauResults(restauData) {
 	// dummy content for development
 
-	const restauData = [
-		{
-			img      :
-				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-			name     : 'Franklin Barbecue',
-			cuisine  : 'BBQ',
-			site     :
-				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-			location :
-				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-		},
-		{
-			img      :
-				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-			name     : 'Franklin Barbecue',
-			cuisine  : 'BBQ',
-			site     :
-				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-			location :
-				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-		},
-		{
-			img      :
-				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-			name     : 'Franklin Barbecue',
-			cuisine  : 'BBQ',
-			site     :
-				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-			location :
-				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-		},
-		{
-			img      :
-				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-			name     : 'Franklin Barbecue',
-			cuisine  : 'BBQ',
-			site     :
-				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-			location :
-				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-		},
-		{
-			img      :
-				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-			name     : 'Franklin Barbecue',
-			cuisine  : 'BBQ',
-			site     :
-				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-			location :
-				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-		},
-		{
-			img      :
-				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-			name     : 'Franklin Barbecue',
-			cuisine  : 'BBQ',
-			site     :
-				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-			location :
-				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-		},
-		{
-			img      :
-				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-			name     : 'Franklin Barbecue',
-			cuisine  : 'BBQ',
-			site     :
-				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-			location :
-				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-		}
-	];
+	// const restauData = [
+	// 	{
+	// 		img      :
+	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+	// 		name     : 'Franklin Barbecue',
+	// 		cuisine  : 'BBQ',
+	// 		site     :
+	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+	// 		location :
+	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+	// 	},
+	// 	{
+	// 		img      :
+	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+	// 		name     : 'Franklin Barbecue',
+	// 		cuisine  : 'BBQ',
+	// 		site     :
+	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+	// 		location :
+	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+	// 	},
+	// 	{
+	// 		img      :
+	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+	// 		name     : 'Franklin Barbecue',
+	// 		cuisine  : 'BBQ',
+	// 		site     :
+	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+	// 		location :
+	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+	// 	},
+	// 	{
+	// 		img      :
+	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+	// 		name     : 'Franklin Barbecue',
+	// 		cuisine  : 'BBQ',
+	// 		site     :
+	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+	// 		location :
+	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+	// 	},
+	// 	{
+	// 		img      :
+	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+	// 		name     : 'Franklin Barbecue',
+	// 		cuisine  : 'BBQ',
+	// 		site     :
+	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+	// 		location :
+	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+	// 	},
+	// 	{
+	// 		img      :
+	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+	// 		name     : 'Franklin Barbecue',
+	// 		cuisine  : 'BBQ',
+	// 		site     :
+	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+	// 		location :
+	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+	// 	},
+	// 	{
+	// 		img      :
+	// 			'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+	// 		name     : 'Franklin Barbecue',
+	// 		cuisine  : 'BBQ',
+	// 		site     :
+	// 			'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+	// 		location :
+	// 			'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+	// 	}
+	// ];
 
 	// populate cards
 
@@ -590,94 +618,3 @@ hereNowBtnEl.addEventListener('click', getUserCoords);
 searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
 // event listener for fav icon
 // favIconEl.addEventListener('click', addToFavs);
-
-// USE THIS GEOHASH CONVERTING SCRIPT IN LIEU OF MAKING ADDITIONAL NETWORK REQUEST TO CONVERT LAT/LON TO GEOHASH FOR TIX MASTER FETCH
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-/* Geohash encoding/decoding and associated functions   (c) Chris Veness 2014-2019 / MIT Licence  */
-// https://www.movable-type.co.uk/scripts/geohash.html
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-
-const base32 = '0123456789bcdefghjkmnpqrstuvwxyz'; // (geohash-specific) Base32 map
-
-/**
- * Geohash: Gustavo Niemeyer’s geocoding system.
- */
-class Geohash {
-	/**
-     * Encodes latitude/longitude to geohash, either to specified precision or to automatically
-     * evaluated precision.
-     *
-     * @param   {number} lat - Latitude in degrees.
-     * @param   {number} lon - Longitude in degrees.
-     * @param   {number} [precision] - Number of characters in resulting geohash.
-     * @returns {string} Geohash of supplied latitude/longitude.
-     * @throws  Invalid geohash.
-     *
-     * @example
-     *     const geohash = Geohash.encode(52.205, 0.119, 7); // => 'u120fxw'
-     */
-	static encode(lat, lon, precision) {
-		// infer precision?
-		if (typeof precision == 'undefined') {
-			// refine geohash until it matches precision of supplied lat/lon
-			for (let p = 1; p <= 12; p++) {
-				const hash = Geohash.encode(lat, lon, p);
-				const posn = Geohash.decode(hash);
-				if (posn.lat == lat && posn.lon == lon) return hash;
-			}
-			precision = 12; // set to maximum
-		}
-
-		lat = Number(lat);
-		lon = Number(lon);
-		precision = Number(precision);
-
-		if (isNaN(lat) || isNaN(lon) || isNaN(precision))
-			throw new Error('Invalid geohash');
-
-		let idx = 0; // index into base32 map
-		let bit = 0; // each char holds 5 bits
-		let evenBit = true;
-		let geohash = '';
-
-		let latMin = -90,
-			latMax = 90;
-		let lonMin = -180,
-			lonMax = 180;
-
-		while (geohash.length < precision) {
-			if (evenBit) {
-				// bisect E-W longitude
-				const lonMid = (lonMin + lonMax) / 2;
-				if (lon >= lonMid) {
-					idx = idx * 2 + 1;
-					lonMin = lonMid;
-				} else {
-					idx = idx * 2;
-					lonMax = lonMid;
-				}
-			} else {
-				// bisect N-S latitude
-				const latMid = (latMin + latMax) / 2;
-				if (lat >= latMid) {
-					idx = idx * 2 + 1;
-					latMin = latMid;
-				} else {
-					idx = idx * 2;
-					latMax = latMid;
-				}
-			}
-			evenBit = !evenBit;
-
-			if (++bit == 5) {
-				// 5 bits gives us a character: append it and start over
-				geohash += base32.charAt(idx);
-				bit = 0;
-				idx = 0;
-			}
-		}
-
-		return geohash;
-	}
-}
