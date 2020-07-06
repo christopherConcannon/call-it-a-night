@@ -16,7 +16,6 @@ const favsArr = localStorage.getItem('faves') || [];
 
 //  GET USER CURRENT LAT/LON AND CREATE CURRENT MOMENT OBJ
 function getUserCoords() {
-  console.log('Here and now button clicked')
   // navigator.geolocation.getCurrentPosition();
   function success(pos) {
       var crd = pos.coords;
@@ -28,13 +27,17 @@ function getUserCoords() {
   };
 
    // Creates Warning User denied Geolocation
-  function error(err) {
+function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
   }
   navigator.geolocation.getCurrentPosition(success, error,);
+
   // current moment object
-    var currentTime = moment().format('hh:mm:ss');
+    let currentDate = moment().format('dddd, MMMM Do YYYY');
+    console.log(currentDate)
+    let currentTime = moment().format('hh:mm:ss');
     console.log(currentTime)
+
   // coordObj = {
   //   lat: 'lat',
   //   lon: 'lon',
@@ -105,6 +108,6 @@ function addToFavs() {
 // ADD EVENT LISTENERS
 hereNowBtnEl.addEventListener('click', getUserCoords);
 // should refactor to fire on form submit, but need to adjust form styles
-searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
+//searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
 // event listener for fav icon
-favIconEl.addEventListener('click', addToFavs);
+//favIconEl.addEventListener('click', addToFavs);
