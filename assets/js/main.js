@@ -239,39 +239,28 @@ function tixMasterFetch(coordObj) {
 	const lat = coordObj.lat;
 	const lon = coordObj.lon;
 
-	// TODO -- FETCH TO http://geohash.world/ to convert lat/lon to geoHash for tixMaster request
+	const geoPoint = Geohash.encode(lat, lon, 7);
 
-	const geohashAPIUrl = `https://geohash.world/v1/encode/${lat},${lon}`;
+	console.log(geoPoint);
 
-	fetch(geohashAPIUrl)
+	const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
+
+	const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=1&apikey=${tixAPIkey}`;
+	// const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?latlon=${lat}${lon}&apikey=${tixAPIkey}`
+	console.log(tixMasterAPIUrl);
+
+	fetch(tixMasterAPIUrl)
 		.then(function(res) {
 			if (res.ok) {
 				res.json().then(function(data) {
-					let geoPoint = data.geohash;
+					let nearbyEvents = data;
+					console.log('tixMasterFetch -> nearbyEvents', nearbyEvents);
 
-					const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
-
-					const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=1&apikey=${tixAPIkey}`;
-					// const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?latlon=${lat}${lon}&apikey=${tixAPIkey}`
-
-					fetch(tixMasterAPIUrl)
-						.then(function(res) {
-							if (res.ok) {
-								res.json().then(function(data) {
-									let nearbyEvents = data;
-									console.log(
-										'tixMasterFetch -> nearbyEvents',
-										nearbyEvents
-									);
-								});
-							} else {
-								let msg = `Error: ${res.statusText}`;
-								displayErrorMsg(msg);
-							}
-						})
-						.catch((error) => {
-							console.error('Error:', error);
-						});
+					if (!nearbyEvents._embedded) {
+						let msg =
+							'Sorry chap/ette, no events in your area.  Call an Uber or Netflix and chill';
+						displayErrorMsg(msg);
+					}
 				});
 			} else {
 				let msg = `Error: ${res.statusText}`;
@@ -601,3 +590,94 @@ hereNowBtnEl.addEventListener('click', getUserCoords);
 searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
 // event listener for fav icon
 // favIconEl.addEventListener('click', addToFavs);
+
+// USE THIS GEOHASH CONVERTING SCRIPT IN LIEU OF MAKING ADDITIONAL NETWORK REQUEST TO CONVERT LAT/LON TO GEOHASH FOR TIX MASTER FETCH
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+/* Geohash encoding/decoding and associated functions   (c) Chris Veness 2014-2019 / MIT Licence  */
+// https://www.movable-type.co.uk/scripts/geohash.html
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+const base32 = '0123456789bcdefghjkmnpqrstuvwxyz'; // (geohash-specific) Base32 map
+
+/**
+ * Geohash: Gustavo Niemeyer’s geocoding system.
+ */
+class Geohash {
+	/**
+     * Encodes latitude/longitude to geohash, either to specified precision or to automatically
+     * evaluated precision.
+     *
+     * @param   {number} lat - Latitude in degrees.
+     * @param   {number} lon - Longitude in degrees.
+     * @param   {number} [precision] - Number of characters in resulting geohash.
+     * @returns {string} Geohash of supplied latitude/longitude.
+     * @throws  Invalid geohash.
+     *
+     * @example
+     *     const geohash = Geohash.encode(52.205, 0.119, 7); // => 'u120fxw'
+     */
+	static encode(lat, lon, precision) {
+		// infer precision?
+		if (typeof precision == 'undefined') {
+			// refine geohash until it matches precision of supplied lat/lon
+			for (let p = 1; p <= 12; p++) {
+				const hash = Geohash.encode(lat, lon, p);
+				const posn = Geohash.decode(hash);
+				if (posn.lat == lat && posn.lon == lon) return hash;
+			}
+			precision = 12; // set to maximum
+		}
+
+		lat = Number(lat);
+		lon = Number(lon);
+		precision = Number(precision);
+
+		if (isNaN(lat) || isNaN(lon) || isNaN(precision))
+			throw new Error('Invalid geohash');
+
+		let idx = 0; // index into base32 map
+		let bit = 0; // each char holds 5 bits
+		let evenBit = true;
+		let geohash = '';
+
+		let latMin = -90,
+			latMax = 90;
+		let lonMin = -180,
+			lonMax = 180;
+
+		while (geohash.length < precision) {
+			if (evenBit) {
+				// bisect E-W longitude
+				const lonMid = (lonMin + lonMax) / 2;
+				if (lon >= lonMid) {
+					idx = idx * 2 + 1;
+					lonMin = lonMid;
+				} else {
+					idx = idx * 2;
+					lonMax = lonMid;
+				}
+			} else {
+				// bisect N-S latitude
+				const latMid = (latMin + latMax) / 2;
+				if (lat >= latMid) {
+					idx = idx * 2 + 1;
+					latMin = latMid;
+				} else {
+					idx = idx * 2;
+					latMax = latMid;
+				}
+			}
+			evenBit = !evenBit;
+
+			if (++bit == 5) {
+				// 5 bits gives us a character: append it and start over
+				geohash += base32.charAt(idx);
+				bit = 0;
+				idx = 0;
+			}
+		}
+
+		return geohash;
+	}
+}
