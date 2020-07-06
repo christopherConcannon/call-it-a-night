@@ -184,7 +184,7 @@ function getUserCoords() {
 
 // GET SELECTED COORDINATES AND DATE/TIME
 function getCustomCoords() {
-	var apiKey = '0c839a0f2d5a4c3192c2c08f5fd44dfc'
+	//apiKey = '0c839a0f2d5a4c3192c2c08f5fd44dfc'
 
   // // GET FORM FIELD INPUT FOR CITY
    const cityInput = document.getElementById("#city")
