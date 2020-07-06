@@ -76,20 +76,15 @@ const restauCardFiveFavIcon = restauCarouselItemFive.querySelector('.fav');
 const restauCardSixFavIcon = restauCarouselItemSix.querySelector('.fav');
 const restauCardSevenFavIcon = restauCarouselItemSeven.querySelector('.fav');
 
-
 // event carousel items****************************************
 // const eventCarouselEl = document.querySelector('#event-carousel');
 const eventCarouselItemOne = document.querySelector('#event-carousel [href="#one!"]');
 const eventCarouselItemTwo = document.querySelector('#event-carousel [href="#two!"]');
-const eventCarouselItemThree = document.querySelector(
-	'#event-carousel [href="#three!"]'
-);
+const eventCarouselItemThree = document.querySelector('#event-carousel [href="#three!"]');
 const eventCarouselItemFour = document.querySelector('#event-carousel [href="#four!"]');
 const eventCarouselItemFive = document.querySelector('#event-carousel [href="#five!"]');
 const eventCarouselItemSix = document.querySelector('#event-carousel [href="#six!"]');
-const eventCarouselItemSeven = document.querySelector(
-	'#event-carousel [href="#seven!"]'
-);
+const eventCarouselItemSeven = document.querySelector('#event-carousel [href="#seven!"]');
 
 // event card images
 const eventCardOneImg = eventCarouselItemOne.querySelector('img');
@@ -145,9 +140,6 @@ const eventCardFiveFavIcon = eventCarouselItemFive.querySelector('.fav');
 const eventCardSixFavIcon = eventCarouselItemSix.querySelector('.fav');
 const eventCardSevenFavIcon = eventCarouselItemSeven.querySelector('.fav');
 
-
-
-
 // GLOBAL VARS
 coordObj = {
 	lat  : 0,
@@ -155,310 +147,363 @@ coordObj = {
 	date : '',
 	time : ''
 };
+
 const favsArr = localStorage.getItem('faves') || [];
 
 //  GET USER CURRENT LAT/LON AND CREATE CURRENT MOMENT OBJ
 function getUserCoords() {
-	console.log('Here and now button clicked');
-	// navigator.geolocation.getCurrentPosition() {
-	// ....
-	// coordObj.lat = pos.coords.latitude;
-	// coordObj.lon = pos.coords.longitude;
-	// }
-	// current moment object
-	// coordObj.date = moment date
-	// coordObj.time = moment time
 
-	// call function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions
-	mediateFetches();
+	function success(pos) {
+		const crd = pos.coords;
+		coordObj.lat = crd.latitude;
+		coordObj.lon = crd.longitude;
+	}
+
+	// Creates Warning User denied Geolocation
+	function error(err) {
+		// TODO output error message to HTML
+		console.warn(`ERROR(${err.code}): ${err.message}`);
+	}
+	if (!navigator.geolocation) {
+		// TODO tell user to choose custom search button
+		console.log('Geolocation is not supported by your browser');
+	} else {
+		navigator.geolocation.getCurrentPosition(success, error);
+  }
+  
+	// current moment object
+	coordObj.date = moment().format('dddd, MMMM Do YYYY');
+	coordObj.time = moment().format('hh:mm:ss');
+
+	console.log(coordObj);
+
+
+  // mediateFetches();
+  revealResultsContainer();
 }
 
 // GET SELECTED COORDINATES AND DATE/TIME
 function getCustomCoords() {
-	console.log('Custom search form submitted');
-	// GET FORM FIELD INPUT FOR CITY
-	// fetch request to OpenCage API
-	// coordObj.lat = pos.coords.latitude;
-	// coordObj.lon = pos.coords.longitude;
+  // // GET FORM FIELD INPUT FOR CITY
+  // const cityInput = 
+  // // fetch request to OpenCage API
+  // const url = `${cityInput}`
+  
+
 
 	// GET FORM FIELD INPUTS FOR DATE AND TIME
 	// current moment object
-	// coordObj.date = moment date
-	// coordObj.time = moment time
+	// coordObj.date = moment(date from form field)
+	// coordObj.time = moment time(time from form field)
 
-	// call function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions
-	mediateFetches();
+  revealResultsContainer();
 }
 
-function mediateFetches() {
-	// get results container on page so it will be ready when data is returned
-	revealResultsContainer();
-	// call individual fetch functions
-	// zomatoFetch();
-	// tixMasterFetch();
-}
 
+// function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions, thus avoiding asynchronicity issues
 function revealResultsContainer() {
 	landingContainerEl.className = 'hide';
 	resultsContainerEl.classList = 'results-wrapper center';
 	// initialize Materialize Carousel
 	M.Carousel.init($('.carousel'));
-  displayRestauResults();
-  displayEventResults();
+	zomatoFetch();
+	tixMasterFetch();
 }
 
 function zomatoFetch() {
 	// fetch from Zomato, passing in coordObj from global scope
 	// pass API data to display function
 	// displayRestauResults(data);
+	displayRestauResults();
 }
 
 function tixMasterFetch(coords) {
 	// fetch from Tix Master, passing in coordObj from global scope
 	// pass API data to display function
 	// displayEventResults(data);
+	displayEventResults();
 }
 
 function displayRestauResults() {
-  // dummy content for development
-  // populate cards
-  const restauData = [ 
-    {
-      img: 'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-      name: 'Franklin Barbecue',
-      cuisine: 'BBQ',
-      site: 'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-      location: 'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-    },
-    {
-      img: 'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-      name: 'Franklin Barbecue',
-      cuisine: 'BBQ',
-      site: 'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-      location: 'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-    },
-    {
-      img: 'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-      name: 'Franklin Barbecue',
-      cuisine: 'BBQ',
-      site: 'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-      location: 'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-    },
-    {
-      img: 'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-      name: 'Franklin Barbecue',
-      cuisine: 'BBQ',
-      site: 'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-      location: 'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-    },
-    {
-      img: 'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-      name: 'Franklin Barbecue',
-      cuisine: 'BBQ',
-      site: 'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-      location: 'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-    },
-    {
-      img: 'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-      name: 'Franklin Barbecue',
-      cuisine: 'BBQ',
-      site: 'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-      location: 'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-    },
-    {
-      img: 'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
-      name: 'Franklin Barbecue',
-      cuisine: 'BBQ',
-      site: 'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
-      location: 'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
-    }
-  ]
+	// dummy content for development
+	// populate cards
+	const restauData = [
+		{
+			img      :
+				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+			name     : 'Franklin Barbecue',
+			cuisine  : 'BBQ',
+			site     :
+				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+			location :
+				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+		},
+		{
+			img      :
+				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+			name     : 'Franklin Barbecue',
+			cuisine  : 'BBQ',
+			site     :
+				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+			location :
+				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+		},
+		{
+			img      :
+				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+			name     : 'Franklin Barbecue',
+			cuisine  : 'BBQ',
+			site     :
+				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+			location :
+				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+		},
+		{
+			img      :
+				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+			name     : 'Franklin Barbecue',
+			cuisine  : 'BBQ',
+			site     :
+				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+			location :
+				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+		},
+		{
+			img      :
+				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+			name     : 'Franklin Barbecue',
+			cuisine  : 'BBQ',
+			site     :
+				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+			location :
+				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+		},
+		{
+			img      :
+				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+			name     : 'Franklin Barbecue',
+			cuisine  : 'BBQ',
+			site     :
+				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+			location :
+				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+		},
+		{
+			img      :
+				'https://b.zmtcdn.com/data/res_imagery/16915865_RESTAURANT_dcf726ac4b64ffc5331b907e78c7e38b_c.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A',
+			name     : 'Franklin Barbecue',
+			cuisine  : 'BBQ',
+			site     :
+				'https://www.zomato.com/austin/franklin-barbecue-rosewood?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1',
+			location :
+				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
+		}
+	];
 
-  // first card
-  restauCardOneImg.setAttribute('src', restauData[0].img);
-  restauCardOneTitle.innerText = restauData[0].name;
-  restauCardOneContent.innerText = restauData[0].cuisine;
-  restauCardOneSiteLink.setAttribute('href', restauData[0].site)
-  restauCardOneSiteLink.setAttribute('target', '_blank')
-  restauCardOneLocationLink.setAttribute('href', restauData[0].location)
-  restauCardOneLocationLink.setAttribute('target', '_blank')
+	// first card
+	restauCardOneImg.setAttribute('src', restauData[0].img);
+	restauCardOneTitle.innerText = restauData[0].name;
+	restauCardOneContent.innerText = restauData[0].cuisine;
+	restauCardOneSiteLink.setAttribute('href', restauData[0].site);
+	restauCardOneSiteLink.setAttribute('target', '_blank');
+	restauCardOneLocationLink.setAttribute('href', restauData[0].location);
+	restauCardOneLocationLink.setAttribute('target', '_blank');
 
-  // second card
-  restauCardTwoImg.setAttribute('src', restauData[1].img);
-  restauCardTwoTitle.innerText = restauData[1].name;
-  restauCardTwoContent.innerText = restauData[1].cuisine;
-  restauCardTwoSiteLink.setAttribute('href', restauData[1].site)
-  restauCardTwoSiteLink.setAttribute('target', '_blank')
-  restauCardTwoLocationLink.setAttribute('href', restauData[1].location)
-  restauCardTwoLocationLink.setAttribute('target', '_blank')
+	// second card
+	restauCardTwoImg.setAttribute('src', restauData[1].img);
+	restauCardTwoTitle.innerText = restauData[1].name;
+	restauCardTwoContent.innerText = restauData[1].cuisine;
+	restauCardTwoSiteLink.setAttribute('href', restauData[1].site);
+	restauCardTwoSiteLink.setAttribute('target', '_blank');
+	restauCardTwoLocationLink.setAttribute('href', restauData[1].location);
+	restauCardTwoLocationLink.setAttribute('target', '_blank');
 
-  // third card
-  restauCardThreeImg.setAttribute('src', restauData[2].img);
-  restauCardThreeTitle.innerText = restauData[2].name;
-  restauCardThreeContent.innerText = restauData[2].cuisine;
-  restauCardThreeSiteLink.setAttribute('href', restauData[2].site)
-  restauCardThreeSiteLink.setAttribute('target', '_blank')
-  restauCardThreeLocationLink.setAttribute('href', restauData[2].location)
-  restauCardThreeLocationLink.setAttribute('target', '_blank')
+	// third card
+	restauCardThreeImg.setAttribute('src', restauData[2].img);
+	restauCardThreeTitle.innerText = restauData[2].name;
+	restauCardThreeContent.innerText = restauData[2].cuisine;
+	restauCardThreeSiteLink.setAttribute('href', restauData[2].site);
+	restauCardThreeSiteLink.setAttribute('target', '_blank');
+	restauCardThreeLocationLink.setAttribute('href', restauData[2].location);
+	restauCardThreeLocationLink.setAttribute('target', '_blank');
 
-  // fourth card
-  restauCardFourImg.setAttribute('src', restauData[3].img);
-  restauCardFourTitle.innerText = restauData[3].name;
-  restauCardFourContent.innerText = restauData[3].cuisine;
-  restauCardFourSiteLink.setAttribute('href', restauData[3].site)
-  restauCardFourSiteLink.setAttribute('target', '_blank')
-  restauCardFourLocationLink.setAttribute('href', restauData[3].location)
-  restauCardFourLocationLink.setAttribute('target', '_blank')
+	// fourth card
+	restauCardFourImg.setAttribute('src', restauData[3].img);
+	restauCardFourTitle.innerText = restauData[3].name;
+	restauCardFourContent.innerText = restauData[3].cuisine;
+	restauCardFourSiteLink.setAttribute('href', restauData[3].site);
+	restauCardFourSiteLink.setAttribute('target', '_blank');
+	restauCardFourLocationLink.setAttribute('href', restauData[3].location);
+	restauCardFourLocationLink.setAttribute('target', '_blank');
 
-  // fifth card
-  restauCardFiveImg.setAttribute('src', restauData[4].img);
-  restauCardFiveTitle.innerText = restauData[4].name;
-  restauCardFiveContent.innerText = restauData[4].cuisine;
-  restauCardFiveSiteLink.setAttribute('href', restauData[4].site)
-  restauCardFiveSiteLink.setAttribute('target', '_blank')
-  restauCardFiveLocationLink.setAttribute('href', restauData[4].location)
-  restauCardFiveLocationLink.setAttribute('target', '_blank')
+	// fifth card
+	restauCardFiveImg.setAttribute('src', restauData[4].img);
+	restauCardFiveTitle.innerText = restauData[4].name;
+	restauCardFiveContent.innerText = restauData[4].cuisine;
+	restauCardFiveSiteLink.setAttribute('href', restauData[4].site);
+	restauCardFiveSiteLink.setAttribute('target', '_blank');
+	restauCardFiveLocationLink.setAttribute('href', restauData[4].location);
+	restauCardFiveLocationLink.setAttribute('target', '_blank');
 
-  // sixth card
-  restauCardSixImg.setAttribute('src', restauData[5].img);
-  restauCardSixTitle.innerText = restauData[5].name;
-  restauCardSixContent.innerText = restauData[5].cuisine;
-  restauCardSixSiteLink.setAttribute('href', restauData[5].site)
-  restauCardSixSiteLink.setAttribute('target', '_blank')
-  restauCardSixLocationLink.setAttribute('href', restauData[5].location)
-  restauCardSixLocationLink.setAttribute('target', '_blank')
+	// sixth card
+	restauCardSixImg.setAttribute('src', restauData[5].img);
+	restauCardSixTitle.innerText = restauData[5].name;
+	restauCardSixContent.innerText = restauData[5].cuisine;
+	restauCardSixSiteLink.setAttribute('href', restauData[5].site);
+	restauCardSixSiteLink.setAttribute('target', '_blank');
+	restauCardSixLocationLink.setAttribute('href', restauData[5].location);
+	restauCardSixLocationLink.setAttribute('target', '_blank');
 
-  // seventh card
-  restauCardSevenImg.setAttribute('src', restauData[6].img);
-  restauCardSevenTitle.innerText = restauData[6].name;
-  restauCardSevenContent.innerText = restauData[6].cuisine;
-  restauCardSevenSiteLink.setAttribute('href', restauData[6].site)
-  restauCardSevenSiteLink.setAttribute('target', '_blank')
-  restauCardSevenLocationLink.setAttribute('href', restauData[6].location)
-  restauCardSevenLocationLink.setAttribute('target', '_blank')
-
+	// seventh card
+	restauCardSevenImg.setAttribute('src', restauData[6].img);
+	restauCardSevenTitle.innerText = restauData[6].name;
+	restauCardSevenContent.innerText = restauData[6].cuisine;
+	restauCardSevenSiteLink.setAttribute('href', restauData[6].site);
+	restauCardSevenSiteLink.setAttribute('target', '_blank');
+	restauCardSevenLocationLink.setAttribute('href', restauData[6].location);
+	restauCardSevenLocationLink.setAttribute('target', '_blank');
 
 	// set data-id attr for fav tracking
 	// add event listener to fav icon...callbck addToFavs()
 }
 
 function displayEventResults() {
-  //  dummy content for development
-  const eventData = [ 
-    {
-      img: 'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-      name: 'PRIMUS - A Tribute to Kings',
-      type: 'Music',
-      site: 'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-      location: 'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-    },
-    {
-      img: 'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-      name: 'PRIMUS - A Tribute to Kings',
-      type: 'Music',
-      site: 'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-      location: 'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-    },
-    {
-      img: 'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-      name: 'PRIMUS - A Tribute to Kings',
-      type: 'Music',
-      site: 'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-      location: 'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-    },
-    {
-      img: 'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-      name: 'PRIMUS - A Tribute to Kings',
-      type: 'Music',
-      site: 'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-      location: 'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-    },
-    {
-      img: 'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-      name: 'PRIMUS - A Tribute to Kings',
-      type: 'Music',
-      site: 'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-      location: 'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-    },
-    {
-      img: 'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-      name: 'PRIMUS - A Tribute to Kings',
-      type: 'Music',
-      site: 'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-      location: 'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-    },
-    {
-      img: 'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-      name: 'PRIMUS - A Tribute to Kings',
-      type: 'Music',
-      site: 'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-      location: 'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-    }
-  ]
-    // popuate cards
-  // first card
-  eventCardOneImg.setAttribute('src', eventData[0].img);
-  eventCardOneTitle.innerText = eventData[0].name;
-  eventCardOneContent.innerText = eventData[0].type;
-  eventCardOneSiteLink.setAttribute('href', eventData[0].site)
-  eventCardOneSiteLink.setAttribute('target', '_blank')
-  eventCardOneLocationLink.setAttribute('href', eventData[0].location)
-  eventCardOneLocationLink.setAttribute('target', '_blank')
+	//  dummy content for development
+	const eventData = [
+		{
+			img      :
+				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
+			name     : 'PRIMUS - A Tribute to Kings',
+			type     : 'Music',
+			site     :
+				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
+			location :
+				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
+		},
+		{
+			img      :
+				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
+			name     : 'PRIMUS - A Tribute to Kings',
+			type     : 'Music',
+			site     :
+				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
+			location :
+				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
+		},
+		{
+			img      :
+				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
+			name     : 'PRIMUS - A Tribute to Kings',
+			type     : 'Music',
+			site     :
+				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
+			location :
+				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
+		},
+		{
+			img      :
+				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
+			name     : 'PRIMUS - A Tribute to Kings',
+			type     : 'Music',
+			site     :
+				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
+			location :
+				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
+		},
+		{
+			img      :
+				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
+			name     : 'PRIMUS - A Tribute to Kings',
+			type     : 'Music',
+			site     :
+				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
+			location :
+				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
+		},
+		{
+			img      :
+				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
+			name     : 'PRIMUS - A Tribute to Kings',
+			type     : 'Music',
+			site     :
+				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
+			location :
+				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
+		},
+		{
+			img      :
+				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
+			name     : 'PRIMUS - A Tribute to Kings',
+			type     : 'Music',
+			site     :
+				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
+			location :
+				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
+		}
+	];
+	// popuate cards
+	// first card
+	eventCardOneImg.setAttribute('src', eventData[0].img);
+	eventCardOneTitle.innerText = eventData[0].name;
+	eventCardOneContent.innerText = eventData[0].type;
+	eventCardOneSiteLink.setAttribute('href', eventData[0].site);
+	eventCardOneSiteLink.setAttribute('target', '_blank');
+	eventCardOneLocationLink.setAttribute('href', eventData[0].location);
+	eventCardOneLocationLink.setAttribute('target', '_blank');
 
-  // second card
-  eventCardTwoImg.setAttribute('src', eventData[1].img);
-  eventCardTwoTitle.innerText = eventData[1].name;
-  eventCardTwoContent.innerText = eventData[1].type;
-  eventCardTwoSiteLink.setAttribute('href', eventData[1].site)
-  eventCardTwoSiteLink.setAttribute('target', '_blank')
-  eventCardTwoLocationLink.setAttribute('href', eventData[1].location)
-  eventCardTwoLocationLink.setAttribute('target', '_blank')
+	// second card
+	eventCardTwoImg.setAttribute('src', eventData[1].img);
+	eventCardTwoTitle.innerText = eventData[1].name;
+	eventCardTwoContent.innerText = eventData[1].type;
+	eventCardTwoSiteLink.setAttribute('href', eventData[1].site);
+	eventCardTwoSiteLink.setAttribute('target', '_blank');
+	eventCardTwoLocationLink.setAttribute('href', eventData[1].location);
+	eventCardTwoLocationLink.setAttribute('target', '_blank');
 
-  // third card
-  eventCardThreeImg.setAttribute('src', eventData[2].img);
-  eventCardThreeTitle.innerText = eventData[2].name;
-  eventCardThreeContent.innerText = eventData[2].type;
-  eventCardThreeSiteLink.setAttribute('href', eventData[2].site)
-  eventCardThreeSiteLink.setAttribute('target', '_blank')
-  eventCardThreeLocationLink.setAttribute('href', eventData[2].location)
-  eventCardThreeLocationLink.setAttribute('target', '_blank')
+	// third card
+	eventCardThreeImg.setAttribute('src', eventData[2].img);
+	eventCardThreeTitle.innerText = eventData[2].name;
+	eventCardThreeContent.innerText = eventData[2].type;
+	eventCardThreeSiteLink.setAttribute('href', eventData[2].site);
+	eventCardThreeSiteLink.setAttribute('target', '_blank');
+	eventCardThreeLocationLink.setAttribute('href', eventData[2].location);
+	eventCardThreeLocationLink.setAttribute('target', '_blank');
 
-  // fourth card
-  eventCardFourImg.setAttribute('src', eventData[3].img);
-  eventCardFourTitle.innerText = eventData[3].name;
-  eventCardFourContent.innerText = eventData[3].type;
-  eventCardFourSiteLink.setAttribute('href', eventData[3].site)
-  eventCardFourSiteLink.setAttribute('target', '_blank')
-  eventCardFourLocationLink.setAttribute('href', eventData[3].location)
-  eventCardFourLocationLink.setAttribute('target', '_blank')
+	// fourth card
+	eventCardFourImg.setAttribute('src', eventData[3].img);
+	eventCardFourTitle.innerText = eventData[3].name;
+	eventCardFourContent.innerText = eventData[3].type;
+	eventCardFourSiteLink.setAttribute('href', eventData[3].site);
+	eventCardFourSiteLink.setAttribute('target', '_blank');
+	eventCardFourLocationLink.setAttribute('href', eventData[3].location);
+	eventCardFourLocationLink.setAttribute('target', '_blank');
 
-  // fifth card
-  eventCardFiveImg.setAttribute('src', eventData[4].img);
-  eventCardFiveTitle.innerText = eventData[4].name;
-  eventCardFiveContent.innerText = eventData[4].type;
-  eventCardFiveSiteLink.setAttribute('href', eventData[4].site)
-  eventCardFiveSiteLink.setAttribute('target', '_blank')
-  eventCardFiveLocationLink.setAttribute('href', eventData[4].location)
-  eventCardFiveLocationLink.setAttribute('target', '_blank')
+	// fifth card
+	eventCardFiveImg.setAttribute('src', eventData[4].img);
+	eventCardFiveTitle.innerText = eventData[4].name;
+	eventCardFiveContent.innerText = eventData[4].type;
+	eventCardFiveSiteLink.setAttribute('href', eventData[4].site);
+	eventCardFiveSiteLink.setAttribute('target', '_blank');
+	eventCardFiveLocationLink.setAttribute('href', eventData[4].location);
+	eventCardFiveLocationLink.setAttribute('target', '_blank');
 
-  // sixth card
-  eventCardSixImg.setAttribute('src', eventData[5].img);
-  eventCardSixTitle.innerText = eventData[5].name;
-  eventCardSixContent.innerText = eventData[5].type;
-  eventCardSixSiteLink.setAttribute('href', eventData[5].site)
-  eventCardSixSiteLink.setAttribute('target', '_blank')
-  eventCardSixLocationLink.setAttribute('href', eventData[5].location)
-  eventCardSixLocationLink.setAttribute('target', '_blank')
+	// sixth card
+	eventCardSixImg.setAttribute('src', eventData[5].img);
+	eventCardSixTitle.innerText = eventData[5].name;
+	eventCardSixContent.innerText = eventData[5].type;
+	eventCardSixSiteLink.setAttribute('href', eventData[5].site);
+	eventCardSixSiteLink.setAttribute('target', '_blank');
+	eventCardSixLocationLink.setAttribute('href', eventData[5].location);
+	eventCardSixLocationLink.setAttribute('target', '_blank');
 
-  // seventh card
-  eventCardSevenImg.setAttribute('src', eventData[6].img);
-  eventCardSevenTitle.innerText = eventData[6].name;
-  eventCardSevenContent.innerText = eventData[6].type;
-  eventCardSevenSiteLink.setAttribute('href', eventData[6].site)
-  eventCardSevenSiteLink.setAttribute('target', '_blank')
-  eventCardSevenLocationLink.setAttribute('href', eventData[6].location)
-  eventCardSevenLocationLink.setAttribute('target', '_blank')
-
+	// seventh card
+	eventCardSevenImg.setAttribute('src', eventData[6].img);
+	eventCardSevenTitle.innerText = eventData[6].name;
+	eventCardSevenContent.innerText = eventData[6].type;
+	eventCardSevenSiteLink.setAttribute('href', eventData[6].site);
+	eventCardSevenSiteLink.setAttribute('target', '_blank');
+	eventCardSevenLocationLink.setAttribute('href', eventData[6].location);
+	eventCardSevenLocationLink.setAttribute('target', '_blank');
 
 	// set data-id attr for fav tracking
 	// add event listener to fav icon...callbck addToFavs()
