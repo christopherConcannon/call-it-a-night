@@ -141,12 +141,7 @@ const eventCardSixFavIcon = eventCarouselItemSix.querySelector('.fav');
 const eventCardSevenFavIcon = eventCarouselItemSeven.querySelector('.fav');
 
 // GLOBAL VARS
-coordObj = {
-	lat  : 0,
-	lon  : 0,
-	date : '',
-	time : ''
-};
+const coordObj = {};
 
 const favsArr = localStorage.getItem('faves') || [];
 
@@ -156,7 +151,14 @@ function getUserCoords() {
 	function success(pos) {
 		const crd = pos.coords;
 		coordObj.lat = crd.latitude;
-		coordObj.lon = crd.longitude;
+    coordObj.lon = crd.longitude;
+    // current moment object
+    coordObj.date = moment().format('dddd, MMMM Do YYYY');
+    coordObj.time = moment().format('hh:mm:ss');
+
+    console.log(coordObj);
+
+    revealResultsContainer(coordObj);
 	}
 
 	// Creates Warning User denied Geolocation
@@ -170,16 +172,6 @@ function getUserCoords() {
 	} else {
 		navigator.geolocation.getCurrentPosition(success, error);
   }
-  
-	// current moment object
-	coordObj.date = moment().format('dddd, MMMM Do YYYY');
-	coordObj.time = moment().format('hh:mm:ss');
-
-	console.log(coordObj);
-
-
-  // mediateFetches();
-  revealResultsContainer();
 }
 
 // GET SELECTED COORDINATES AND DATE/TIME
@@ -201,24 +193,72 @@ function getCustomCoords() {
 
 
 // function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions, thus avoiding asynchronicity issues
-function revealResultsContainer() {
+function revealResultsContainer(coordObj) {
 	landingContainerEl.className = 'hide';
 	resultsContainerEl.classList = 'results-wrapper center';
 	// initialize Materialize Carousel
 	M.Carousel.init($('.carousel'));
-	zomatoFetch();
-	tixMasterFetch();
+	zomatoFetch(coordObj);
+	tixMasterFetch(coordObj);
 }
 
-function zomatoFetch() {
-	// fetch from Zomato, passing in coordObj from global scope
+function zomatoFetch(coordObj) {
+  const lat = coordObj.lat;
+  const lon = coordObj.lon;
+  // format url
+  const zomatoAPIUrl = `https://developers.zomato.com/api/v2.1/geocode?lat=${lat}&lon=${lon}`
+  console.log(zomatoAPIUrl);
+  // fetch from Zomato, passing in coordObj from global scope
+  fetch(zomatoAPIUrl,
+      {
+        method: 'GET', 
+        headers: {
+            'user-key': '26d100244c8261ae45b9599c8a8848cd'
+        },
+      }
+  )
+  .then(res => res.json())
+  .then(data => {
+      let nearbyRestaurants = data.nearby_restaurants
+      console.log('getZomatoData -> nearbyRestaurants', nearbyRestaurants)
+  })
+  .catch(error => {
+      console.error('Error:', error)
+  })
+
+  // TODO -- CREATE OBJECT TO PASS TO DISPLAY FUNCTION
+
 	// pass API data to display function
 	// displayRestauResults(data);
 	displayRestauResults();
 }
 
-function tixMasterFetch(coords) {
-	// fetch from Tix Master, passing in coordObj from global scope
+function tixMasterFetch(coordObj) {
+  const lat = coordObj.lat;
+  const lon = coordObj.lon;
+
+  // TODO -- FETCH TO http://geohash.world/ to convert lat/lon to geoHash for tixMaster request
+
+
+  const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
+  // fetch from Tix Master, passing in coordObj from global scope
+  const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=9v6s0j&radius=1&apikey=wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx`
+  // const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?latlon=${lat}${lon}&apikey=${tixAPIkey}`
+  
+  // fetch from Zomato, passing in coordObj from global scope
+  fetch(tixMasterAPIUrl)
+  .then(res => res.json())
+  .then(data => {
+      let nearbyEvents = data
+      console.log('tixMasterFetch -> nearbyEvents', nearbyEvents);
+  })
+  .catch(error => {
+      console.error('Error:', error)
+  })
+
+
+
+
 	// pass API data to display function
 	// displayEventResults(data);
 	displayEventResults();
@@ -226,7 +266,7 @@ function tixMasterFetch(coords) {
 
 function displayRestauResults() {
 	// dummy content for development
-	// populate cards
+	
 	const restauData = [
 		{
 			img      :
@@ -298,7 +338,9 @@ function displayRestauResults() {
 			location :
 				'https://www.openstreetmap.org/search?query=900%20East%2011th%20Street%2C%20Austin%2078702#map=19/30.27011/-97.73125'
 		}
-	];
+  ];
+  
+  // populate cards
 
 	// first card
 	restauCardOneImg.setAttribute('src', restauData[0].img);
@@ -523,6 +565,10 @@ function displayFavs() {
 		// style the icon to show its selected (heart filled in)
 		// event listener on icon to remove from favs
 	}
+}
+
+function displayErrorMsg(err) {
+
 }
 
 // ADD EVENT LISTENERS
