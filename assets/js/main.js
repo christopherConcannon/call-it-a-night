@@ -236,12 +236,13 @@ function zomatoFetch(coordObj) {
 
 		for (var i = 0; i <= 7; i++) {
 			let restauObj = {};
-			// let restauLat = nearbyRestaurants[i].restaurant.location.latitude;
-			// let restauLon = nearbyRestaurants[i].restaurant.location.longitude;
 
+			// url encode special characters for query
 			let address = nearbyRestaurants[i].restaurant.location.address;
 			let encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
-			// 11940 Manchaca Road, Austin 78748
+
+			// let restauLat = nearbyRestaurants[i].restaurant.location.latitude;
+			// let restauLon = nearbyRestaurants[i].restaurant.location.longitude;
 
 			restauObj.name = nearbyRestaurants[i].restaurant.name;
 			restauObj.img =
@@ -251,6 +252,7 @@ function zomatoFetch(coordObj) {
 			restauObj.cuisine = nearbyRestaurants[i].restaurant.cuisines;
 			restauObj.site = nearbyRestaurants[i].restaurant.url;
 			restauObj.location = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+			// lat/lon based query if issues arise in address search
 			// restauObj.location = `https://www.google.com/maps/dir/?api=1&destination=${restauLat},${restauLon}`;
 			restauDataArr.push(restauObj);
 		}
@@ -263,13 +265,14 @@ function tixMasterFetch(coordObj) {
 	const lat = coordObj.lat;
 	const lon = coordObj.lon;
 
+	// convert lat/lon to geohash using 3rd party script
 	const geoPoint = Geohash.encode(lat, lon, 7);
 
 	console.log(geoPoint);
 
 	const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
 
-	const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=1&apikey=${tixAPIkey}`;
+	const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&apikey=${tixAPIkey}`;
 	// const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?latlon=${lat}${lon}&apikey=${tixAPIkey}`
 	console.log(tixMasterAPIUrl);
 
@@ -277,13 +280,20 @@ function tixMasterFetch(coordObj) {
 		.then(function(res) {
 			if (res.ok) {
 				res.json().then(function(data) {
-					let nearbyEvents = data;
-					console.log('tixMasterFetch -> nearbyEvents', nearbyEvents);
-
-					if (!nearbyEvents._embedded) {
+					if (!data._embedded) {
 						let msg =
 							'Sorry chap/ette, no events in your area.  Call an Uber or Netflix and chill';
 						displayErrorMsg(msg);
+					} else {
+						let nearbyEvents = data._embedded.events;
+						console.log('tixMasterFetch -> nearbyEvents', nearbyEvents);
+
+						// build data object
+						const eventDataArr = buildEventData(nearbyEvents);
+
+						// pass API data to display function
+						// displayEventResults(eventDataArr);
+						displayEventResults(eventDataArr);
 					}
 				});
 			} else {
@@ -295,9 +305,35 @@ function tixMasterFetch(coordObj) {
 			console.error('Error:', error);
 		});
 
+	function buildEventData(nearbyEvents) {
+		let eventDataArr = [];
+
+		for (var i = 0; i <= 7; i++) {
+			let eventObj = {};
+
+			// url encode special characters for address query
+			// let address = '';
+			// let encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
+
+			let eventLat = nearbyEvents[i]._embedded.venues[0].location.latitude;
+			let eventLon = nearbyEvents[i]._embedded.venues[0].location.longitude;
+
+			// eventObj.name = nearbyEvents[i].name;
+			eventObj.img = nearbyEvents[i].images[0].url;
+
+			eventObj.type = nearbyEvents[i].name;
+			// eventObj.type = nearbyEvents[i].classifications[0].genre.name;
+			eventObj.site = nearbyEvents[i].url;
+			// eventObj.location = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+			// lat/lon based query if issues arise in address search
+			eventObj.location = `https://www.google.com/maps/dir/?api=1&destination=${eventLat},${eventLon}`;
+			eventDataArr.push(eventObj);
+		}
+		return eventDataArr;
+	}
+
 	// pass API data to display function
 	// displayEventResults(data);
-	displayEventResults();
 }
 
 function displayRestauResults(restauData) {
@@ -370,80 +406,7 @@ function displayRestauResults(restauData) {
 	// add event listener to fav icon...callbck addToFavs()
 }
 
-function displayEventResults() {
-	//  dummy content for development
-	const eventData = [
-		{
-			img      :
-				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-			name     : 'PRIMUS - A Tribute to Kings',
-			type     : 'Music',
-			site     :
-				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-			location :
-				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-		},
-		{
-			img      :
-				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-			name     : 'PRIMUS - A Tribute to Kings',
-			type     : 'Music',
-			site     :
-				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-			location :
-				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-		},
-		{
-			img      :
-				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-			name     : 'PRIMUS - A Tribute to Kings',
-			type     : 'Music',
-			site     :
-				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-			location :
-				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-		},
-		{
-			img      :
-				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-			name     : 'PRIMUS - A Tribute to Kings',
-			type     : 'Music',
-			site     :
-				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-			location :
-				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-		},
-		{
-			img      :
-				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-			name     : 'PRIMUS - A Tribute to Kings',
-			type     : 'Music',
-			site     :
-				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-			location :
-				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-		},
-		{
-			img      :
-				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-			name     : 'PRIMUS - A Tribute to Kings',
-			type     : 'Music',
-			site     :
-				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-			location :
-				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-		},
-		{
-			img      :
-				'https://s1.ticketm.net/dam/a/f44/36cfa60f-15f6-4308-a297-0eb739899f44_1294441_TABLET_LANDSCAPE_LARGE_16_9.jpg',
-			name     : 'PRIMUS - A Tribute to Kings',
-			type     : 'Music',
-			site     :
-				'https://www.ticketmaster.com/primus-a-tribute-to-kings-austin-texas-06-12-2021/event/3A00584DEE937A6A',
-			location :
-				'https://www.openstreetmap.org/search?query=310%20Lavaca%2078701#map=19/30.26614/-97.74626'
-		}
-	];
+function displayEventResults(eventData) {
 	// popuate cards
 	// first card
 	eventCardOneImg.setAttribute('src', eventData[0].img);
