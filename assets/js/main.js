@@ -8,6 +8,12 @@ const cityInputEl = document.querySelector('#city');
 const dateInputEl = document.querySelector('#date');
 const timeInputEl = document.querySelector('#time');
 
+// parent element for delegatation of .fav listener
+const resultsWrapperEl = document.querySelector('#results-wrapper');
+const favoritesCarouselEl = document.querySelector('#favorites-carousel')
+
+
+
 // restaurant carousel items**********************************************************
 // const restauCarouselEl = document.querySelector('#restau-carousel');
 const restauCarouselItemOne = document.querySelector('#restau-carousel [href="#one!"]');
@@ -143,7 +149,8 @@ const eventCardSevenFavIcon = eventCarouselItemSeven.querySelector('.fav');
 // GLOBAL VARS
 const coordObj = {};
 
-const favsArr = localStorage.getItem('faves') || [];
+const favsArr = [];
+// const favsArr = localStorage.getItem('faves') || [];
 
 //  GET USER CURRENT LAT/LON AND CREATE CURRENT MOMENT OBJ
 function getUserCoords() {
@@ -477,18 +484,43 @@ function displayEventResults(eventData) {
 	// add event listener to fav icon...callback addToFavs()
 }
 
-function addToFavs() {
-	// favsArr.push(cardEl.data-id === x)
-	// localStorage.setItem('faves', favsArr);
-	// displayFavs();
+function buildFav(event) {
+  if (event.target.closest('.fav-icon')) {
+    let newFavIcon = event.target.closest('.fav-icon');
+    let newFav = newFavIcon.closest('.carousel-item');
+    let newFavId = newFav.getAttribute('data-id');
+    console.log(newFavId);
+    let newFavCopy = newFav.cloneNode(true);
+    newFavCopy.setAttribute('data-id', `${newFavId}-copy`);
+    let newFavCopyIcon = newFavCopy.querySelector('.fav-icon');
+    newFavCopyIcon.innerText = 'favorite';
+    newFavCopyIcon.classList = 'material-icons fav-icon-copy'
+    console.log(newFavCopy);
+    addToFavs(newFavCopy);
+  } else return;
 }
 
-function displayFavs() {
+function addToFavs(newFavCopy) {
+  
+
+  favsArr.push(newFavCopy)
+  localStorage.setItem('faves', JSON.stringify(favsArr))
+  displayFavs(favsArr);
+  
+	// favsArr.push(cardEl.data-id === x)
+	// localStorage.setItem('faves', favsArr);
+  // displayFavs();
+  
+}
+
+function displayFavs(favsArr) {
 	for (let i = 0; i < favsArr.length; i++) {
-		// populate cards
+    favoritesCarouselEl.appendChild(favsArr[i]);
 		// style the icon to show its selected (heart filled in)
 		// event listener on icon to remove from favs
-	}
+  }
+  favoritesCarouselEl.className = 'carousel'
+  M.Carousel.init($('#favorites-carousel.carousel'));
 }
 
 function displayErrorMsg(err) {
@@ -500,5 +532,6 @@ function displayErrorMsg(err) {
 hereNowBtnEl.addEventListener('click', getUserCoords);
 // should refactor to fire on form submit for accessibility, but need to adjust form styles
 searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
+
 // event listener for fav icon
-// favIconEl.addEventListener('click', addToFavs);
+resultsWrapperEl.addEventListener('click', buildFav);
