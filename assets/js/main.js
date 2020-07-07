@@ -213,11 +213,46 @@ function zomatoFetch() {
 	// displayRestauResults(data);
 }
 
-function tixMasterFetch(coords) {
-  // fetch from Tix Master, passing in coordObj from global scope
-  fetch("https://app.ticketmaster.com/discovery/v2/events.json?size=1&apikey=wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx");
+// fetch from Tix Master, passing in coordObj
+function tixMasterFetch(coordObj) {
+	const lat = coordObj.lat;
+	const lon = coordObj.lon;
+
+	const geoPoint = Geohash.encode(lat, lon, 7);
+
+	console.log(geoPoint);
+
+	const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
+
+	const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=1&apikey=${tixAPIkey}`;
+	// const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?latlon=${lat}${lon}&apikey=${tixAPIkey}`
+	console.log(tixMasterAPIUrl);
+
+	fetch(tixMasterAPIUrl)
+		.then(function(res) {
+			if (res.ok) {
+				res.json().then(function(data) {
+					let nearbyEvents = data;
+					console.log('tixMasterFetch -> nearbyEvents', nearbyEvents);
+
+					if (!nearbyEvents._embedded) {
+						let msg =
+							'Sorry chap/ette, no events in your area.  Call an Uber or Netflix and chill';
+						displayErrorMsg(msg);
+					}
+				});
+			} else {
+				let msg = `Error: ${res.statusText}`;
+				displayErrorMsg(msg);
+			}
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+
 	// pass API data to display function
 	// displayEventResults(data);
+	displayEventResults();
 }
 
 function displayRestauResults() {
