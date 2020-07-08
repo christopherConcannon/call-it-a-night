@@ -184,23 +184,38 @@ function getUserCoords() {
 
 // GET SELECTED COORDINATES AND DATE/TIME
 function getCustomCoords() {
-	//apiKey = '0c839a0f2d5a4c3192c2c08f5fd44dfc'
-
   // // GET FORM FIELD INPUT FOR CITY
-   const cityInput = document.getElementById("#city")
+    const cityInput = cityInputEl.value;
+	console.log(cityInput)
+	const date = dateInputEl.value;
+	console.log(date)
+	let time = timeInputEl.value;
+	time = time.replace(/[PM|AM]/gi, '').trim();
+	console.log(time)
+	let dateTime = `${date}T${time}`
   // // fetch request to OpenCage API
-   const url = 'https://api.opencagedata.com/geocode/v1/json?q=' + `${cityInput}` + '&key=0c839a0f2d5a4c3192c2c08f5fd44dfc'
-   console.log(url)
-  
+  //const openCageApiKey = '0c839a0f2d5a4c3192c2c08f5fd44dfc';
+  //const openCageUrl = 'https://api.opencagedata.com/geocode/v1/json';
 
-
+  fetch(
+	  'https://api.opencagedata.com/geocode/v1/json?q=' +
+	  cityInput +
+	  '&key=0c839a0f2d5a4c3192c2c08f5fd44dfc&language=en&pretty=1&no_annotations=1'
+  ).then(function(response) {
+	return response.json()
+  })
+	.then(function(results) {
+		coordObj.lat = results.results[0].geometry.lat;
+		coordObj.lon =  results.results[0].geometry.lng;
+		coordObj.date = moment(dateTime);
+		console.log(coordObj);
+	});
 	// GET FORM FIELD INPUTS FOR DATE AND TIME
 	// current moment object
 	// coordObj.date = moment(date from form field)
 	// coordObj.time = moment time(time from form field)
-
-  revealResultsContainer();
-}
+  revealResultsContainer(coordObj);
+};
 
 
 // function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions, thus avoiding asynchronicity issues
