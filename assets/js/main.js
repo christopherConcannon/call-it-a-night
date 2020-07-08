@@ -149,9 +149,11 @@ function tixMasterFetch(coordObj) {
 	// convert lat/lon to geohash using 3rd party script
 	const geoPoint = Geohash.encode(lat, lon, 7);
 
-	const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
+  const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
+  
+  const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&localStartDateTime=2020-07-21T16:30:00,2020-07-21T23:30:00&apikey=${tixAPIkey}`;
+  // const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=9v6s0j&radius=10&localStartDateTime=2020-07-21T16:30:00,2020-07-21T23:30:00&apikey=${tixAPIkey}`;
 
-	const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&apikey=${tixAPIkey}`;
 
 	fetch(tixMasterAPIUrl)
 		.then(function(res) {
