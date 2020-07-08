@@ -309,3 +309,4 @@ searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
 
 // event listener for fav icon
 resultsWrapperEl.addEventListener('click', buildFav);
+
