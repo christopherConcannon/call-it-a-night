@@ -30,7 +30,9 @@ function getUserCoords() {
 		coordObj.lon = crd.longitude;
 		// current moment object
 		coordObj.dateTimeStart = moment().format('YYYY-MM-DDTHH:mm:ss');
-		coordObj.dateTimeEnd = moment().add(6, 'h').format('YYYY-MM-DDTHH:mm:ss');
+		// make range 6 days for testing
+		coordObj.dateTimeEnd = moment().add(6, 'd').format('YYYY-MM-DDTHH:mm:ss');
+		// coordObj.dateTimeEnd = moment().add(6, 'h').format('YYYY-MM-DDTHH:mm:ss');
 
 		console.log(coordObj);
 
@@ -60,10 +62,10 @@ function getCustomCoords() {
 	console.log(dateInputVal);
 	const timeInputVal = timeInputEl.value.trim();
 	console.log(timeInputVal);
-  let dateTimeStart = `${dateInputVal} ${timeInputVal}`;
-  
+	let dateTimeStart = `${dateInputVal} ${timeInputVal}`;
+
 	// fetch request to OpenCage API
-  // format url
+	// format url
 	const openCageApiKey = '0c839a0f2d5a4c3192c2c08f5fd44dfc';
 	const openCageUrl = `https://api.opencagedata.com/geocode/v1/json?q=${cityInputVal}&key=${openCageApiKey}&pretty=1&no_annotations=1`;
 
@@ -73,14 +75,20 @@ function getCustomCoords() {
 		})
 		.then(function(data) {
 			coordObj.lat = data.results[0].geometry.lat;
-      coordObj.lon = data.results[0].geometry.lng;
-      coordObj.dateTimeStart = moment(dateTimeStart, 'MMM D, YYYY HH:mm A', true).format('YYYY-MM-DDTHH:mm:ss');
-      coordObj.dateTimeEnd = moment(dateTimeStart, 'MMM D, YYYY HH:mm A', true).add(6, 'h').format('YYYY-MM-DDTHH:mm:ss');
-      console.log(coordObj);
-      revealResultsContainer(coordObj);
+			coordObj.lon = data.results[0].geometry.lng;
+			coordObj.dateTimeStart = moment(
+				dateTimeStart,
+				'MMM D, YYYY HH:mm A',
+				true
+			).format('YYYY-MM-DDTHH:mm:ss');
+			// make range 6 days for testing
+			coordObj.dateTimeEnd = moment(dateTimeStart, 'MMM D, YYYY HH:mm A', true)
+				.add(6, 'd')
+				.format('YYYY-MM-DDTHH:mm:ss');
+			// coordObj.dateTimeEnd = moment(dateTimeStart, 'MMM D, YYYY HH:mm A', true).add(6, 'h').format('YYYY-MM-DDTHH:mm:ss');
+			console.log(coordObj);
+			revealResultsContainer(coordObj);
 		});
-
-	
 }
 
 // function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions, thus avoiding asynchronicity issues
@@ -127,20 +135,20 @@ function zomatoFetch(coordObj) {
 // fetch from Tix Master, passing in coordObj
 function tixMasterFetch(coordObj) {
 	const lat = coordObj.lat;
-  const lon = coordObj.lon;
-  console.log(lat, lon);
-  const dateTimeStart = coordObj.dateTimeStart;
-  const dateTimeEnd = coordObj.dateTimeEnd;
+	const lon = coordObj.lon;
+	console.log(lat, lon);
+	const dateTimeStart = coordObj.dateTimeStart;
+	const dateTimeEnd = coordObj.dateTimeEnd;
 
 	// convert lat/lon to geohash using 3rd party script
-  const geoPoint = Geohash.encode(lat, lon, 7);
-  console.log(geoPoint);
+	const geoPoint = Geohash.encode(lat, lon, 7);
+	console.log(geoPoint);
 
 	const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
 
-	// const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&localStartDateTime=${dateTimeStart},${dateTimeEnd}&apikey=${tixAPIkey}`;
+	const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&localStartDateTime=${dateTimeStart},${dateTimeEnd}&apikey=${tixAPIkey}`;
 	// const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=9v6s0j&radius=10&localStartDateTime=2020-07-21T16:30:00,2020-07-21T23:30:00&apikey=${tixAPIkey}`;
-	const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=9v6s0j&radius=10&&apikey=${tixAPIkey}`;
+	// const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=9v6s0j&radius=10&&apikey=${tixAPIkey}`;
 
 	fetch(tixMasterAPIUrl)
 		.then(function(res) {
@@ -174,11 +182,12 @@ function displayRestauResults(restauData) {
 	let innerHTML = '';
 	const index = [ 'one', 'two', 'three', 'four', 'five', 'six', 'seven' ];
 	for (var i = 0; i <= 6; i++) {
-		// url encode special characters for query
-		const address = restauData[i].restaurant.location.address;
-		const encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
+		if (restauData[i]) {
+			// url encode special characters for query
+			const address = restauData[i].restaurant.location.address;
+			const encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
 
-		innerHTML += `
+			innerHTML += `
     <div href="#${index[i]}!" class="carousel-item" data-id="restau-${i + 1}">
     <div class="card">
       <div class="card-image">
@@ -198,6 +207,7 @@ function displayRestauResults(restauData) {
     </div>
     </div>
     `;
+		}
 	}
 	restauCarouselEl.innerHTML = innerHTML;
 	// initialize Materialize Carousel
@@ -216,10 +226,11 @@ function displayEventResults(eventData) {
 	const index = [ 'one', 'two', 'three', 'four', 'five', 'six', 'seven' ];
 	// getting error when there are less than 7 results cannot read '_embedded' of undefined.  need to set condition
 	for (var i = 0; i <= 6; i++) {
-		let eventLat = eventData[i]._embedded.venues[0].location.latitude;
-		let eventLon = eventData[i]._embedded.venues[0].location.longitude;
+		if (eventData[i]) {
+			let eventLat = eventData[i]._embedded.venues[0].location.latitude;
+			let eventLon = eventData[i]._embedded.venues[0].location.longitude;
 
-		innerHTML += `
+			innerHTML += `
     <div href="#${index[i]}!" class="carousel-item" data-id="event-${i + 1}">
     <div class="card">
       <div class="card-image">
@@ -237,6 +248,7 @@ function displayEventResults(eventData) {
     </div>
     </div>
     `;
+		}
 	}
 	eventCarouselEl.innerHTML = innerHTML;
 	// initialize Materialize Carousel
@@ -249,18 +261,36 @@ function displayEventResults(eventData) {
 }
 
 function buildFav(event) {
+	// if a fav-icon was clicked
 	if (event.target.closest('.fav-icon')) {
+		// store reference to the clicked icon
 		let newFavIcon = event.target.closest('.fav-icon');
+		// get the clicked icon's nearest .carousel-item ancestor
 		let newFav = newFavIcon.closest('.carousel-item');
+		// get the .carousel-items id
 		let newFavId = newFav.getAttribute('data-id');
 		console.log(newFavId);
+		// build object to save to favsArray
+		// const favDataObj = {
+		//   img: '',
+		//   content: '',
+		//   siteLink: '',
+		//   mapLink: ''
+		// }
+
+		// clone the existing .carousel-item
 		let newFavCopy = newFav.cloneNode(true);
+		// set new id on copy
 		newFavCopy.setAttribute('data-id', `${newFavId}-copy`);
+		// get icon element of copy
 		let newFavCopyIcon = newFavCopy.querySelector('.fav-icon');
+		// change fav-icon to show it's been selected
 		newFavCopyIcon.innerText = 'favorite';
+		// update copy's class list so it won't be listened on
 		newFavCopyIcon.classList = 'material-icons fav-icon-copy';
 		console.log(newFavCopy);
-		addToFavs(newFavCopy);
+		// add to favsArr/LS
+		addToFavs(favDataObj);
 	} else return;
 }
 
