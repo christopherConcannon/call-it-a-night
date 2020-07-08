@@ -110,36 +110,6 @@ function zomatoFetch(coordObj) {
 		});
 }
 
-// // CREATE OBJECT TO PASS TO DISPLAY FUNCTION
-// function buildRestauData(data) {
-// 	let nearbyRestaurants = data.nearby_restaurants;
-// 	console.log('getZomatoData -> nearbyRestaurants', nearbyRestaurants);
-// 	let restauDataArr = [];
-
-// 	for (var i = 0; i <= 7; i++) {
-// 		let restauObj = {};
-
-// 		// url encode special characters for query
-// 		let address = nearbyRestaurants[i].restaurant.location.address;
-// 		let encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
-
-// 		// let restauLat = nearbyRestaurants[i].restaurant.location.latitude;
-// 		// let restauLon = nearbyRestaurants[i].restaurant.location.longitude;
-
-// 		restauObj.name = nearbyRestaurants[i].restaurant.name;
-// 		restauObj.img =
-// 			nearbyRestaurants[i].restaurant.thumb !== ''
-// 				? nearbyRestaurants[i].restaurant.thumb
-// 				: './assets/images/restau-placeholder-img.jpg';
-// 		restauObj.cuisine = nearbyRestaurants[i].restaurant.cuisines;
-// 		restauObj.site = nearbyRestaurants[i].restaurant.url;
-// 		restauObj.location = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
-// 		// lat/lon based query if issues arise in address search
-// 		// restauObj.location = `https://www.google.com/maps/dir/?api=1&destination=${restauLat},${restauLon}`;
-// 		restauDataArr.push(restauObj);
-// 	}
-// 	return restauDataArr;
-// }
 
 // fetch from Tix Master, passing in coordObj
 function tixMasterFetch(coordObj) {
@@ -151,8 +121,9 @@ function tixMasterFetch(coordObj) {
 
   const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
   
-  const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&localStartDateTime=2020-07-21T16:30:00,2020-07-21T23:30:00&apikey=${tixAPIkey}`;
+  // const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&localStartDateTime=2020-07-21T16:30:00,2020-07-21T23:30:00&apikey=${tixAPIkey}`;
   // const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=9v6s0j&radius=10&localStartDateTime=2020-07-21T16:30:00,2020-07-21T23:30:00&apikey=${tixAPIkey}`;
+  const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=9v6s0j&radius=10&&apikey=${tixAPIkey}`;
 
 
 	fetch(tixMasterAPIUrl)
@@ -167,7 +138,6 @@ function tixMasterFetch(coordObj) {
 						let eventData = data._embedded.events;
 
 						// pass API data to display function
-						// displayEventResults(eventDataArr);
 						displayEventResults(eventData);
 					}
 				});
@@ -180,36 +150,6 @@ function tixMasterFetch(coordObj) {
 			console.error('Error:', error);
 		});
 }
-
-// function buildEventData(nearbyEvents) {
-// 	let eventDataArr = [];
-
-// 	for (var i = 0; i <= 7; i++) {
-// 		let eventObj = {};
-
-// 		// url encode special characters for address query
-// 		// let address = '';
-// 		// let encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
-
-// 		let eventLat = nearbyEvents[i]._embedded.venues[0].location.latitude;
-// 		let eventLon = nearbyEvents[i]._embedded.venues[0].location.longitude;
-
-// 		// eventObj.name = nearbyEvents[i].name;
-// 		eventObj.img = nearbyEvents[i].images[0].url;
-
-// 		eventObj.type = nearbyEvents[i].name;
-// 		// eventObj.type = nearbyEvents[i].classifications[0].genre.name;
-// 		eventObj.site = nearbyEvents[i].url;
-// 		// eventObj.location = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
-// 		// lat/lon based query if issues arise in address search
-// 		eventObj.location = `https://www.google.com/maps/dir/?api=1&destination=${eventLat},${eventLon}`;
-// 		eventDataArr.push(eventObj);
-// 	}
-// 	return eventDataArr;
-// }
-
-// pass API data to display function
-// displayEventResults(data);
 
 function displayRestauResults(restauData) {
   console.log('getZomatoData -> nearbyRestaurants', restauData);
@@ -226,9 +166,9 @@ function displayRestauResults(restauData) {
     <div href="#${index[i]}!" class="carousel-item" data-id="restau-${i+1}">
     <div class="card">
       <div class="card-image">
-        <img src=${restauData[i].restaurant.thumb !== ''
+        <img src="${restauData[i].restaurant.thumb !== ''
         				? restauData[i].restaurant.thumb
-        				: './assets/images/restau-placeholder-img.jpg'}>
+        				: './assets/images/restau-placeholder-img.jpg'}">
       </div>
       <div class="card-content">
         <p>${restauData[i].restaurant.name} -- ${restauData[i].restaurant.cuisines}</p>
@@ -255,6 +195,38 @@ function displayRestauResults(restauData) {
 function displayEventResults(eventData) {
   // populate cards
   console.log('tixMasterFetch -> nearbyEvents', eventData);
+  
+  // populate cards
+  let innerHTML = '';
+  const index = ['one', 'two', 'three', 'four', 'five', 'six', 'seven'];
+  // getting error when there are less than 7 results cannot read '_embedded' of undefined.  need to set condition
+  for (var i = 0; i <= 6; i++) {
+
+    let eventLat = eventData[i]._embedded.venues[0].location.latitude;
+		let eventLon = eventData[i]._embedded.venues[0].location.longitude;
+ 
+    
+    innerHTML += `
+    <div href="#${index[i]}!" class="carousel-item" data-id="event-${i+1}">
+    <div class="card">
+      <div class="card-image">
+        <img src="${eventData[i].images[0].url}">
+      </div>
+      <div class="card-content">
+        <p>${eventData[i].name}</p>
+      </div>
+      <div class="card-action">
+        <a href="${eventData[i].url}" class="site" target="_blank"><i class="material-icons">language</i></a>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${eventLat},${eventLon}" class="location" target="_blank"><i class="material-icons">directions</i></a>
+        <i class="material-icons fav-icon">favorite_border</i>
+      </div>
+    </div>
+    </div>
+    `
+  }
+  eventCarouselEl.innerHTML = innerHTML;
+  // initialize Materialize Carousel
+  M.Carousel.init($('#event-carousel.carousel'));
 
 	
 	// set data-id attr for fav tracking
