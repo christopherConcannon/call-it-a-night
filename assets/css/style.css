@@ -44,6 +44,14 @@ h1 {
   height: 400px;
 }
 /* not working */
-.carousel i.material-icon.fav {
-  color: #ffab40 !important;
+.carousel i.material-icons.fav-icon,
+.carousel i.material-icons.fav-icon-copy {
+  color: #ffab40 ;
+  transition: color .3s ease;
+}
+
+.carousel i.material-icons.fav-icon:hover,
+.carousel i.material-icons.fav-icon-copy:hover {
+  color: #ffd8a6; ;
+  cursor: pointer;
 }

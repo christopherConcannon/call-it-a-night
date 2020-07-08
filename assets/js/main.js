@@ -271,12 +271,12 @@ function buildFav(event) {
 		let newFavId = newFav.getAttribute('data-id');
 		console.log(newFavId);
 		// build object to save to favsArray
-		// const favDataObj = {
-		//   img: '',
-		//   content: '',
-		//   siteLink: '',
-		//   mapLink: ''
-		// }
+		const favDataObj = {
+		  img: '',
+		  content: '',
+		  siteLink: '',
+		  mapLink: ''
+		}
 
 		// clone the existing .carousel-item
 		let newFavCopy = newFav.cloneNode(true);
@@ -290,7 +290,8 @@ function buildFav(event) {
 		newFavCopyIcon.classList = 'material-icons fav-icon-copy';
 		console.log(newFavCopy);
 		// add to favsArr/LS
-		addToFavs(favDataObj);
+		// addToFavs(favDataObj);
+		addToFavs(newFavCopy);
 	} else return;
 }
 
@@ -315,7 +316,8 @@ function displayFavs(favsArr) {
 }
 
 function displayErrorMsg(err) {
-	console.log(err);
+  console.log(err);
+  
 	// TODO -- CREATE HTML MESSAGE INSTEAD OF CONSOLE.LOG/ALERT
 }
 
