@@ -8,6 +8,7 @@ const cityInputEl = document.querySelector('#city');
 const dateInputEl = document.querySelector('#date');
 const timeInputEl = document.querySelector('#time');
 
+// carousel container divs
 const restauCarouselEl = document.querySelector('#restau-carousel');
 const eventCarouselEl = document.querySelector('#event-carousel');
 const favoritesCarouselEl = document.querySelector('#favorites-carousel');
@@ -68,6 +69,8 @@ function getCustomCoords() {
 
 	revealResultsContainer(coordObj);
 }
+
+
 
 // function to synchronize revealResultsContainer with fetch requests so container will be on page before data is returned and sent to individual display<x>Results() functions, thus avoiding asynchronicity issues
 function revealResultsContainer(coordObj) {
