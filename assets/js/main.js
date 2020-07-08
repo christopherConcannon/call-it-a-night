@@ -192,7 +192,7 @@ function getCustomCoords() {
 	let time = timeInputEl.value;
 	time = time.replace(/[PM|AM]/gi, '').trim();
 	console.log(time)
-	let dateTime = `${date}T${time}`
+	let dateTime = `${date} ${time}`
   // // fetch request to OpenCage API
   //const openCageApiKey = '0c839a0f2d5a4c3192c2c08f5fd44dfc';
   //const openCageUrl = 'https://api.opencagedata.com/geocode/v1/json';
@@ -207,13 +207,12 @@ function getCustomCoords() {
 	.then(function(results) {
 		coordObj.lat = results.results[0].geometry.lat;
 		coordObj.lon =  results.results[0].geometry.lng;
-		coordObj.date = moment(dateTime);
+		coordObj.date = moment(dateTime).format('YYYY-MM-DDTHH:mm:ss');
 		console.log(coordObj);
 	});
 	// GET FORM FIELD INPUTS FOR DATE AND TIME
 	// current moment object
 	// coordObj.date = moment(date from form field)
-	// coordObj.time = moment time(time from form field)
   revealResultsContainer(coordObj);
 };
 
