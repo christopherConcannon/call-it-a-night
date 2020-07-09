@@ -205,6 +205,10 @@ span.brand-logo,
 	.btn {
 		font-size: .7rem;
 	}
+  
+    .results-wrapper section {
+      margin: 3rem 0 5rem 0;
+  }
 
 	#results-wrapper .brand-logo {
 		font-size: 1.2rem;
