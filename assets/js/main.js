@@ -7,6 +7,7 @@ const searchFormSubmitBtnEl = document.querySelector('#search-form-submit');
 const cityInputEl = document.querySelector('#city');
 const dateInputEl = document.querySelector('#date');
 const timeInputEl = document.querySelector('#time');
+const favoritesEl = document.querySelector('#favorites');
 
 // carousel container divs
 const restauCarouselEl = document.querySelector('#restau-carousel');
@@ -271,12 +272,12 @@ function buildFav(event) {
 		let newFavId = newFav.getAttribute('data-id');
 		console.log(newFavId);
 		// build object to save to favsArray
-		const favDataObj = {
-		  img: '',
-		  content: '',
-		  siteLink: '',
-		  mapLink: ''
-		}
+		// const favDataObj = {
+		//   img: '',
+		//   content: '',
+		//   siteLink: '',
+		//   mapLink: ''
+		// }
 
 		// clone the existing .carousel-item
 		let newFavCopy = newFav.cloneNode(true);
@@ -290,7 +291,8 @@ function buildFav(event) {
 		newFavCopyIcon.classList = 'material-icons fav-icon-copy';
 		console.log(newFavCopy);
 		// add to favsArr/LS
-		// addToFavs(favDataObj);
+    // addToFavs(favDataObj);
+    favoritesEl.classList.remove('hide');
 		addToFavs(newFavCopy);
 	} else return;
 }
