@@ -55,7 +55,8 @@ function getUserCoords() {
 
 // // GET SELECTED COORDINATES AND DATE/TIME
 
-function getCustomCoords() {
+function getCustomCoords(event) {
+  // event.preventDefault();
 	// GET FORM FIELD INPUT FOR CITY
 	const cityInputVal = cityInputEl.value.trim();
 	console.log(cityInputVal);
@@ -212,7 +213,8 @@ function displayRestauResults(restauData) {
 	}
 	restauCarouselEl.innerHTML = innerHTML;
 	// initialize Materialize Carousel
-	M.Carousel.init($('#restau-carousel.carousel'));
+  M.Carousel.init($('#restau-carousel.carousel'));
+  loadFavs();
 
 	// TODO
 	// set data-id attr for fav tracking
@@ -261,7 +263,7 @@ function displayEventResults(eventData) {
 	// add event listener to fav icon...callback addToFavs()
 }
 
-function buildFav(event) {
+function addToFavs(event) {
 	// if a fav-icon was clicked
 	if (event.target.closest('.fav-icon')) {
 		// store reference to the clicked icon
@@ -270,17 +272,10 @@ function buildFav(event) {
 		let newFav = newFavIcon.closest('.carousel-item');
 		// get the .carousel-items id
 		let newFavId = newFav.getAttribute('data-id');
-		console.log(newFavId);
-		// build object to save to favsArray
-		// const favDataObj = {
-		//   img: '',
-		//   content: '',
-		//   siteLink: '',
-		//   mapLink: ''
-		// }
-
 		// clone the existing .carousel-item
-		let newFavCopy = newFav.cloneNode(true);
+    let newFavCopy = newFav.cloneNode(true);
+    // remove active class
+    newFavCopy.classList.remove('active');
 		// set new id on copy
 		newFavCopy.setAttribute('data-id', `${newFavId}-copy`);
 		// get icon element of copy
@@ -289,23 +284,23 @@ function buildFav(event) {
 		newFavCopyIcon.innerText = 'favorite';
 		// update copy's class list so it won't be listened on
 		newFavCopyIcon.classList = 'material-icons fav-icon-copy';
-		console.log(newFavCopy);
-		// add to favsArr/LS
-    // addToFavs(favDataObj);
+    // make heading and container are visible
     favoritesEl.classList.remove('hide');
-		addToFavs(newFavCopy);
-
 		// display newFavCopy
-		favoritesCarouselEl.appendChild(newFavCopy);
+    favoritesCarouselEl.appendChild(newFavCopy);
+    // initialize carousel instance
 		favoritesCarouselEl.className = 'carousel';
-		M.Carousel.init($('#favorites-carousel.carousel'));
+    M.Carousel.init($('#favorites-carousel.carousel'));
+    
+    // set favorites to LS
+    localStorage.setItem('faves', JSON.stringify(favoritesEl.innerHTML));
 	} else return;
 }
 
-function addToFavs(newFavCopy) {
-	favsArr.push(newFavCopy.innerHTML);
-	localStorage.setItem('faves', JSON.stringify(favsArr));
-}
+// function addToFavs(newFavCopy) {
+// 	favsArr.push(newFavCopy.innerHTML);
+// 	localStorage.setItem('faves', JSON.stringify(favsArr));
+// }
 
 // function addToFavs(newFavCopy) {
 // 	favsArr.push(newFavCopy);
@@ -333,10 +328,31 @@ function displayErrorMsg(err) {
 	// TODO -- CREATE HTML MESSAGE INSTEAD OF CONSOLE.LOG/ALERT
 }
 
+function loadFavs() {
+  let favsInnerHTML = localStorage.getItem('faves');
+  if (!favsInnerHTML) {
+    return false;
+  }
+
+  favsInnerHTML = JSON.parse(favsInnerHTML);
+
+  favoritesEl.classList.remove('hide');
+  favoritesEl.innerHTML = favsInnerHTML
+  M.Carousel.init($('#favorites-carousel.carousel'));
+  // need to remove class active on all but first child
+  // const initFavs = document.querySelector('.fav-icon');
+  // console.log(initFavs);
+  // initFavs.click();
+
+}
+
+// loadFavs();
+
 // ADD EVENT LISTENERS
 hereNowBtnEl.addEventListener('click', getUserCoords);
 // should refactor to fire on form submit for accessibility, but need to adjust form styles
+// searchFormEl.addEventListener('submit', getCustomCoords);
 searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
 
 // event listener for fav icon
-resultsWrapperEl.addEventListener('click', buildFav);
+resultsWrapperEl.addEventListener('click', addToFavs);

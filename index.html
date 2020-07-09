@@ -12,12 +12,13 @@
   <main>
 
     <div id="landing-wrapper" class="landing-wrapper center valign-wrapper">
-      <div class="container white-text">
+      <!-- <div class="container white-text"> -->
+      <div class="container">
         <section id="hero">
-          <h1>Call It A Night</h1>
-          <p>Looking for something fun to do?  Something delicious and close by?  Having trouble making up your mind?  Let us help you make the right call.</p>
-          <button id="here-now" class="btn waves-effect waves-light">Here & Now</button>
-          <a href="#modal-customize" class="btn blue waves-effect waves-light modal-trigger">Customize Search</a>
+          <h1 class="white-text">Call It A Night</h1>
+          <p class="white-text">Looking for something fun to do?  Something delicious and close by?  Having trouble making up your mind?  Let us help you make the right call.</p>
+          <button id="here-now" class="btn btn-green waves-effect waves-light">Here & Now</button>
+          <a href="#modal-customize" class="btn btn-blue waves-effect waves-light modal-trigger">Customize Search</a>
         
     
           <!-- MODAL STRUCTURE  - HIDDEN UNTIL MODAL OPENED -->
@@ -25,21 +26,24 @@
             <div class="modal-content">
               <form id="search">
                 <div class="input-field">
-                  <input type="text" id="city">
+                  <input type="text" id="city" class="validate" required>
                   <label class="active" for="city">City</label>
                 </div>
                 <div class="input-field">
-                  <input id="date" type="text" class="datepicker">
+                  <input id="date" type="text" class="datepicker" class="validate" required>
                   <label class="active" for="date">Date</label>
                 </div>
                 <div class="input-field">
-                  <input id="time" type="text" class="timepicker">
+                  <input id="time" type="text" class="timepicker" class="validate" required>
                   <label class="active" for="time">Time</label>
                 </div>
               </form>
             </div>
             <div class="modal-footer">
-              <button id="search-form-submit" class="btn modal-action modal-close waves-effect waves-green">Search</button>
+              <!-- add form attr to associate button with form though button is not in form -->
+              <button  class="btn btn-red modal-action modal-close waves-effect waves-red">Close</button>
+              <!-- <button form="search" id="search-form-submit" class="btn modal-action waves-effect waves-green">Search</button> -->
+              <button id="search-form-submit" class="btn btn-green green-text modal-action modal-close waves-effect waves-green">Search</button>
             </div>
           </div> <!-- close div#modal-customize-->
     
@@ -64,7 +68,7 @@
           <div class="nav-wrapper">
             <span class="brand-logo">Call It A Night</span>
             <ul class="right">
-              <li><a href="index.html" class="btn back-btn">New Search</a></li>
+              <li><a href="index.html" class="btn btn-green back-btn">New Search</a></li>
             </ul>
           </div>
         </nav>
