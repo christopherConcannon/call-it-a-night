@@ -16,7 +16,12 @@ span.brand-logo,
   font-family: 'Abril Fatface', cursive;
 }
 
-
+#hero p {
+  font-size: 1.3rem;
+  line-height: 1.7;
+  width: 70%;
+  margin: 0 auto 3rem auto;
+}
 
 .landing-wrapper {
 	height: 100vh;
@@ -147,6 +152,18 @@ span.brand-logo,
 	cursor: pointer;
 }
 
+
+.error-msg {
+  color: #fff;
+  margin-top: 2rem;
+  font-size: 2rem;
+}
+.err-img {
+  font-size: 10rem;
+}
+
+/* RESPONSIVENESS */
+
 @media screen and (min-width: 993px) {
 	.brand-logo {
 		margin-left: -6.3rem;
@@ -155,12 +172,6 @@ span.brand-logo,
 
 /* NOTE...CHANGES SIZE OF CAROUSEL ITEMS ON LARGER SCREENS.  DUE TO CAROUSEL.INIT DOES NOT 'RESIZE' WELL BUT ON PAGE LOAD LOOKS GOOD ON DIFFERENT SCREEN TYPES.  HOW TO FIX WITH JS? */
 @media screen and (min-width: 601px) {
-  /* .datepicker-container.modal-content {
-	
-		-webkit-flex-direction: row;
-		-ms-flex-direction: row;
-		flex-direction: column;
-  } */
   
 	.carousel {
 		height: 700px;

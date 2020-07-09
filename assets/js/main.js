@@ -17,6 +17,10 @@ const favoritesCarouselEl = document.querySelector('#favorites-carousel');
 // parent element for delegatation of .fav listener
 const resultsWrapperEl = document.querySelector('#results-wrapper');
 
+// error msg containers
+const restauErrMsgEl = document.querySelector('#restau-err-msg');
+const eventErrMsgEl = document.querySelector('#event-err-msg');
+
 // GLOBAL VARS
 const coordObj = {};
 
@@ -35,19 +39,21 @@ function getUserCoords() {
 		coordObj.dateTimeEnd = moment().add(6, 'd').format('YYYY-MM-DDTHH:mm:ss');
 		// coordObj.dateTimeEnd = moment().add(6, 'h').format('YYYY-MM-DDTHH:mm:ss');
 
-		console.log(coordObj);
-
 		revealResultsContainer(coordObj);
 	}
 
 	// Creates Warning User denied Geolocation
 	function error(err) {
 		// TODO output error message to HTML
-		console.warn(`ERROR(${err.code}): ${err.message}`);
+		// console.warn(`ERROR(${err.code}): ${err.message}`);
+		// let msg = "If you don't want us to use your location, you can still make a custom search";
+		// displayErrorMsg(msg);
 	}
 	if (!navigator.geolocation) {
 		// TODO tell user to choose custom search button
 		console.log('Geolocation is not supported by your browser');
+		// let msg = "Geolocation is not supported by your browser, but you can still make a custom search";
+		// displayErrorMsg(msg);
 	} else {
 		navigator.geolocation.getCurrentPosition(success, error);
 	}
@@ -56,14 +62,11 @@ function getUserCoords() {
 // // GET SELECTED COORDINATES AND DATE/TIME
 
 function getCustomCoords(event) {
-  // event.preventDefault();
+	// event.preventDefault();
 	// GET FORM FIELD INPUT FOR CITY
 	const cityInputVal = cityInputEl.value.trim();
-	console.log(cityInputVal);
 	const dateInputVal = dateInputEl.value;
-	console.log(dateInputVal);
 	const timeInputVal = timeInputEl.value.trim();
-	console.log(timeInputVal);
 	let dateTimeStart = `${dateInputVal} ${timeInputVal}`;
 
 	// fetch request to OpenCage API
@@ -88,7 +91,6 @@ function getCustomCoords(event) {
 				.add(6, 'd')
 				.format('YYYY-MM-DDTHH:mm:ss');
 			// coordObj.dateTimeEnd = moment(dateTimeStart, 'MMM D, YYYY HH:mm A', true).add(6, 'h').format('YYYY-MM-DDTHH:mm:ss');
-			console.log(coordObj);
 			revealResultsContainer(coordObj);
 		});
 }
@@ -124,13 +126,17 @@ function zomatoFetch(coordObj) {
 					displayRestauResults(restauData);
 				});
 			} else {
-				let msg = `Error: ${res.statusText}`;
-				displayErrorMsg(msg);
+				// let msg = `Error: ${res.statusText}`;
+				let msg =
+					"Sorry, can't get listings for that area.  Maybe try somewhere else for your next vacation";
+				displayErrorMsg(msg, restauErrMsgEl);
 			}
 		})
 		.catch((error) => {
 			console.error('Error:', error);
-			displayErrorMsg(error);
+			let msg =
+				'Sorry, no listings for that area.  Maybe try somewhere else for your next vacation';
+			displayErrorMsg(msg, restauErrMsgEl);
 		});
 }
 
@@ -138,13 +144,11 @@ function zomatoFetch(coordObj) {
 function tixMasterFetch(coordObj) {
 	const lat = coordObj.lat;
 	const lon = coordObj.lon;
-	console.log(lat, lon);
 	const dateTimeStart = coordObj.dateTimeStart;
 	const dateTimeEnd = coordObj.dateTimeEnd;
 
 	// convert lat/lon to geohash using 3rd party script
 	const geoPoint = Geohash.encode(lat, lon, 7);
-	console.log(geoPoint);
 
 	const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
 
@@ -159,7 +163,7 @@ function tixMasterFetch(coordObj) {
 					if (!data._embedded) {
 						let msg =
 							'Sorry chap/ette, no events in your area.  Call an Uber or Netflix and chill';
-						displayErrorMsg(msg);
+						displayErrorMsg(msg, eventErrMsgEl);
 					} else {
 						let eventData = data._embedded.events;
 
@@ -168,12 +172,18 @@ function tixMasterFetch(coordObj) {
 					}
 				});
 			} else {
-				let msg = `Error: ${res.statusText}`;
-				displayErrorMsg(msg);
+				// let msg = `Error: ${res.statusText}`;
+				// displayErrorMsg(msg);
+				let msg =
+					"Sorry chap/ette, can't fetch events in your area right now.  Call an Uber or Netflix and chill";
+				displayErrorMsg(msg, eventErrMsgEl);
 			}
 		})
 		.catch((error) => {
-			console.error('Error:', error);
+			// console.error('Error:', error);
+			let msg =
+				"Sorry chap/ette, can't fetch events in your area right now.  Call an Uber or Netflix and chill";
+			displayErrorMsg(msg, eventErrMsgEl);
 		});
 }
 
@@ -213,8 +223,8 @@ function displayRestauResults(restauData) {
 	}
 	restauCarouselEl.innerHTML = innerHTML;
 	// initialize Materialize Carousel
-  M.Carousel.init($('#restau-carousel.carousel'));
-  loadFavs();
+	M.Carousel.init($('#restau-carousel.carousel'));
+	loadFavs();
 
 	// TODO
 	// set data-id attr for fav tracking
@@ -273,9 +283,9 @@ function addToFavs(event) {
 		// get the .carousel-items id
 		let newFavId = newFav.getAttribute('data-id');
 		// clone the existing .carousel-item
-    let newFavCopy = newFav.cloneNode(true);
-    // remove active class
-    newFavCopy.classList.remove('active');
+		let newFavCopy = newFav.cloneNode(true);
+		// remove active class
+		newFavCopy.classList.remove('active');
 		// set new id on copy
 		newFavCopy.setAttribute('data-id', `${newFavId}-copy`);
 		// get icon element of copy
@@ -284,16 +294,16 @@ function addToFavs(event) {
 		newFavCopyIcon.innerText = 'favorite';
 		// update copy's class list so it won't be listened on
 		newFavCopyIcon.classList = 'material-icons fav-icon-copy';
-    // make heading and container are visible
-    favoritesEl.classList.remove('hide');
+		// make heading and container are visible
+		favoritesEl.classList.remove('hide');
 		// display newFavCopy
-    favoritesCarouselEl.appendChild(newFavCopy);
-    // initialize carousel instance
+		favoritesCarouselEl.appendChild(newFavCopy);
+		// initialize carousel instance
 		favoritesCarouselEl.className = 'carousel';
-    M.Carousel.init($('#favorites-carousel.carousel'));
-    
-    // set favorites to LS
-    localStorage.setItem('faves', JSON.stringify(favoritesEl.innerHTML));
+		M.Carousel.init($('#favorites-carousel.carousel'));
+
+		// set favorites to LS
+		localStorage.setItem('faves', JSON.stringify(favoritesEl.innerHTML));
 	} else return;
 }
 
@@ -322,28 +332,31 @@ function addToFavs(event) {
 // 	M.Carousel.init($('#favorites-carousel.carousel'));
 // }
 
-function displayErrorMsg(err) {
-	console.log(err);
-
+function displayErrorMsg(msg, container) {
+	console.log(msg);
+	container.innerHTML = `${msg}     
+    <div class="err-img">
+      😭
+    </div>`;
+	// container.querySelector('.err-img').classList.remove('hide');
 	// TODO -- CREATE HTML MESSAGE INSTEAD OF CONSOLE.LOG/ALERT
 }
 
 function loadFavs() {
-  let favsInnerHTML = localStorage.getItem('faves');
-  if (!favsInnerHTML) {
-    return false;
-  }
+	let favsInnerHTML = localStorage.getItem('faves');
+	if (!favsInnerHTML) {
+		return false;
+	}
 
-  favsInnerHTML = JSON.parse(favsInnerHTML);
+	favsInnerHTML = JSON.parse(favsInnerHTML);
 
-  favoritesEl.classList.remove('hide');
-  favoritesEl.innerHTML = favsInnerHTML
-  M.Carousel.init($('#favorites-carousel.carousel'));
-  // need to remove class active on all but first child
-  // const initFavs = document.querySelector('.fav-icon');
-  // console.log(initFavs);
-  // initFavs.click();
-
+	favoritesEl.classList.remove('hide');
+	favoritesEl.innerHTML = favsInnerHTML;
+	M.Carousel.init($('#favorites-carousel.carousel'));
+	// need to remove class active on all but first child
+	// const initFavs = document.querySelector('.fav-icon');
+	// console.log(initFavs);
+	// initFavs.click();
 }
 
 // loadFavs();
