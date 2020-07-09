@@ -35,13 +35,7 @@ h1 {
   background-color: #303030;
 } 
 
-
-.carousel {
-  height: 700px;
-  margin-top: -10%;
-}
-.carousel .carousel-item {
-  width: 400px;
+.card-image {
   height: 400px;
 }
 
@@ -62,15 +56,15 @@ h1 {
     margin-left: -6.3rem;
   }
 }
-/* 
-@media screen and (max-width: 601px) {
-  .carousel {
-    width: 75%;
-    margin: 0 auto;
-  }
 
-  .carousel .carousel-item {
-    width: 350px;
-    height: 350px;
+/* NOTE...CHANGES SIZE OF CAROUSEL ITEMS ON LARGER SCREENS.  DUE TO CAROUSEL.INIT DOES NOT 'RESIZE' WELL BUT ON PAGE LOAD LOOKS GOOD ON DIFFERENT SCREEN TYPES.  HOW TO FIX WITH JS? */
+@media screen and (min-width: 602px) {
+  .carousel {
+    height: 700px;
+    margin-top: -10%;
   }
-} */
+  .carousel .carousel-item {
+    width: 400px;
+    height: 400px;
+  }
+}
