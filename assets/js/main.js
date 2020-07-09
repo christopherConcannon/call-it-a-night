@@ -24,7 +24,7 @@ const eventErrMsgEl = document.querySelector('#event-err-msg');
 // GLOBAL VARS
 const coordObj = {};
 
-const favsArr = [];
+// const favsArr = [];
 // const favsArr = localStorage.getItem('faves') || [];
 
 //  GET USER CURRENT LAT/LON AND CREATE CURRENT MOMENT OBJ

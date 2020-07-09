@@ -1,26 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Open+Sans&display=swap');
 
 body {
-font-family: 'Open Sans', sans-serif;
-
+	font-family: 'Open Sans', sans-serif;
 }
 
 #hero h1 {
-  
 	margin-bottom: 5rem;
 }
 
-#hero h1, 
-span.brand-logo, 
-#results-wrapper h5{
-  font-family: 'Abril Fatface', cursive;
+#hero h1,
+span.brand-logo,
+#results-wrapper h5 {
+	font-family: 'Abril Fatface', cursive;
 }
 
 #hero p {
-  font-size: 1.3rem;
-  line-height: 1.7;
-  width: 70%;
-  margin: 0 auto 3rem auto;
+	font-size: 1.3rem;
+	line-height: 1.7;
+	width: 70%;
+	margin: 0 auto 3rem auto;
 }
 
 .landing-wrapper {
@@ -35,37 +33,37 @@ span.brand-logo,
 }
 
 .btn {
-  border-radius: 20px;
-  background-color: transparent;
-  border: 2px solid;
+	border-radius: 20px;
+	background-color: transparent;
+	border: 2px solid;
 }
 
 .btn-green {
-  border-color:#26a69a;
+	border-color: #26a69a;
 }
 
 .btn-blue {
-  border-color: #2196F3;
+	border-color: #2196f3;
 }
 .btn-blue:hover {
-  background-color: #2196F3
+	background-color: #2196f3;
 }
 
 .btn-red {
-  border-color: #F44336;
-  color: #F44336;
+	border-color: #f44336;
+	color: #f44336;
 }
 .modal-footer .btn-red:hover {
-  background-color: #F44336;
-  color: #fff;
+	background-color: #f44336;
+	color: #fff;
 }
 
 .modal-footer .btn-green:hover {
-  color: #fff !important;
+	color: #fff !important;
 }
 
 #here-now.btn {
-  margin-right: 1rem;
+	margin-right: 1rem;
 }
 
 .modal {
@@ -78,38 +76,37 @@ span.brand-logo,
 
 .datepicker-container.modal-content {
 	-webkit-box-orient: vertical;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
+	-webkit-flex-direction: column;
+	-ms-flex-direction: column;
+	flex-direction: column;
 }
 
-
 .datepicker-date-display {
-  -webkit-box-flex: none;
-  -webkit-flex: none;
-  -ms-flex: none;
-  flex: none;
+	-webkit-box-flex: none;
+	-webkit-flex: none;
+	-ms-flex: none;
+	flex: none;
 }
 
 .datepicker-controls {
-  width: 280px;
+	width: 280px;
 }
 
 .datepicker-controls .select-month input {
-  width: 80px;
+	width: 80px;
 }
 
 .timepicker-container.modal-content {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  padding: 0;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	padding: 0;
 }
 
 .results-wrapper {
@@ -128,17 +125,17 @@ span.brand-logo,
 }
 
 .carousel {
-  height: 500px;
-  margin-top: -10%;
+	height: 500px;
+	margin-top: -10%;
 }
 .carousel .carousel-item {
-  width: 225px;
-  height: 225px;
+	width: 225px;
+	height: 225px;
 }
 
 .card-image {
 	height: 200px;
-} 
+}
 
 .carousel i.material-icons.fav-icon,
 .carousel i.material-icons.fav-icon-copy {
@@ -152,14 +149,13 @@ span.brand-logo,
 	cursor: pointer;
 }
 
-
 .error-msg {
-  color: #fff;
-  margin-top: 2rem;
-  font-size: 2rem;
+	color: #fff;
+	margin-top: 2rem;
+	font-size: 2rem;
 }
 .err-img {
-  font-size: 10rem;
+	font-size: 10rem;
 }
 
 /* RESPONSIVENESS */
@@ -172,7 +168,6 @@ span.brand-logo,
 
 /* NOTE...CHANGES SIZE OF CAROUSEL ITEMS ON LARGER SCREENS.  DUE TO CAROUSEL.INIT DOES NOT 'RESIZE' WELL BUT ON PAGE LOAD LOOKS GOOD ON DIFFERENT SCREEN TYPES.  HOW TO FIX WITH JS? */
 @media screen and (min-width: 601px) {
-  
 	.carousel {
 		height: 700px;
 		margin-top: -10%;
@@ -180,11 +175,47 @@ span.brand-logo,
 	.carousel .carousel-item {
 		width: 400px;
 		height: 400px;
-  }
-  
-  .card-image {
-    height: 400px;
-  }
+	}
+
+	.card-image {
+		height: 400px;
+	}
 }
 
+@media screen and (max-width: 960px) {
+	#hero h1{
+		font-size: 2.5rem;
+	}
+	#hero p {
+		font-size: 1rem;
+	}
+	.btn {
+		font-size: .8rem;
+	}
+}
 
+@media screen and (max-width: 601px) {
+	#hero h1,
+	span.brand-logo {
+		font-size: 2rem;
+	}
+	#hero p {
+		font-size: .8rem;
+	}
+	.btn {
+		font-size: .7rem;
+	}
+
+	#results-wrapper .brand-logo {
+		font-size: 1.2rem;
+  }
+  
+	#results-wrapper .btn {
+		font-size: .5rem;
+		padding: 0 .5rem;
+  }
+  
+	#results-wrapper h5 {
+    font-size: 1.4rem;
+  }
+}
