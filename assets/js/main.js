@@ -271,12 +271,12 @@ function buildFav(event) {
 		let newFavId = newFav.getAttribute('data-id');
 		console.log(newFavId);
 		// build object to save to favsArray
-		const favDataObj = {
-		  img: '',
-		  content: '',
-		  siteLink: '',
-		  mapLink: ''
-		}
+		// const favDataObj = {
+		// 	img      : '',
+		// 	content  : '',
+		// 	siteLink : '',
+		// 	mapLink  : ''
+		// };
 
 		// clone the existing .carousel-item
 		let newFavCopy = newFav.cloneNode(true);
@@ -289,35 +289,47 @@ function buildFav(event) {
 		// update copy's class list so it won't be listened on
 		newFavCopyIcon.classList = 'material-icons fav-icon-copy';
 		console.log(newFavCopy);
-		// add to favsArr/LS
+
 		// addToFavs(favDataObj);
+
+		// add to favsArr/LS
 		addToFavs(newFavCopy);
+
+		// display newFavCopy
+		favoritesCarouselEl.appendChild(newFavCopy);
+		favoritesCarouselEl.className = 'carousel';
+		M.Carousel.init($('#favorites-carousel.carousel'));
 	} else return;
 }
 
 function addToFavs(newFavCopy) {
-	favsArr.push(newFavCopy);
+	favsArr.push(newFavCopy.innerHTML);
 	localStorage.setItem('faves', JSON.stringify(favsArr));
-	displayFavs(favsArr);
-
-	// favsArr.push(cardEl.data-id === x)
-	// localStorage.setItem('faves', favsArr);
-	// displayFavs();
 }
 
-function displayFavs(favsArr) {
-	for (let i = 0; i < favsArr.length; i++) {
-		favoritesCarouselEl.appendChild(favsArr[i]);
-		// style the icon to show its selected (heart filled in)
-		// event listener on icon to remove from favs
-	}
-	favoritesCarouselEl.className = 'carousel';
-	M.Carousel.init($('#favorites-carousel.carousel'));
-}
+// function addToFavs(newFavCopy) {
+// 	favsArr.push(newFavCopy);
+// 	localStorage.setItem('faves', JSON.stringify(favsArr));
+// 	displayFavs(favsArr);
+
+// 	// favsArr.push(cardEl.data-id === x)
+// 	// localStorage.setItem('faves', favsArr);
+// 	// displayFavs();
+// }
+
+// function displayFavs(favsArr) {
+// 	for (let i = 0; i < favsArr.length; i++) {
+// 		favoritesCarouselEl.appendChild(favsArr[i]);
+// 		// style the icon to show its selected (heart filled in)
+// 		// event listener on icon to remove from favs
+// 	}
+// 	favoritesCarouselEl.className = 'carousel';
+// 	M.Carousel.init($('#favorites-carousel.carousel'));
+// }
 
 function displayErrorMsg(err) {
-  console.log(err);
-  
+	console.log(err);
+
 	// TODO -- CREATE HTML MESSAGE INSTEAD OF CONSOLE.LOG/ALERT
 }
 
