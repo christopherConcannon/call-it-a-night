@@ -21,6 +21,11 @@ const resultsWrapperEl = document.querySelector('#results-wrapper');
 const restauErrMsgEl = document.querySelector('#restau-err-msg');
 const eventErrMsgEl = document.querySelector('#event-err-msg');
 
+
+
+
+
+
 // GLOBAL VARS
 const coordObj = {};
 
@@ -293,19 +298,19 @@ function addFav(event) {
 		let newFavId = newFav.getAttribute('data-id');
 		console.log(newFavId);
 
-		// CAREFUL -- BREAKING TEST CODE HERE ***************************************************************
+		// CAREFUL -- EXPERIMENTAL WORKING CODE HERE ***************************************************************
 
 		// check if data-id attribute of clicked card is equal to one already on an item in the favorites container.
 
 		// create iterable nodeList of cards already in favorites
 		const favNodeList = favoritesGridEl.querySelectorAll('#favorites-grid .fav-card');
-		// console.log(favNodeList);
+		console.log(favNodeList);
 
 		let idCheck = '';
 		// loop over nodeList and if data-id of clicked on card does not match data-id of card already in favorites, copy and append it
 		favNodeList.forEach(function(favNode) {
 			// get data-id of favorite card in current iteration
-			let favNodeId = favNode.getAttribute('data-id');
+			const favNodeId = favNode.getAttribute('data-id');
 			// console.log(favNodeId);
 			// check if it matches clicked on card's data-id
 			if (favNodeId === newFavId) {
@@ -336,7 +341,7 @@ function addFav(event) {
 			localStorage.setItem('faves', JSON.stringify(favoritesGridEl.innerHTML));
 		}
 
-		//  BREAKING CODE ABOVE ***********************************************************************
+		//   EXPERIMENTAL WORKING ABOVE -- PREVIOUS WORKING VERSION BELOW ***********************************************************************
 
 		// let newFavCopy = newFav.cloneNode(true);
 		// // remove active class
@@ -378,17 +383,51 @@ function addFav(event) {
 function removeFav() {
   if (event.target.closest('.fav-icon-copy')) {
 		// store reference to the clicked icon
-		let favIconToRemove = event.target.closest('.fav-icon-copy');
+		const favIconToRemove = event.target.closest('.fav-icon-copy');
 		if (favIconToRemove.closest('.fav-card')) {
-			let favToRemove = favIconToRemove.closest('.fav-card');
+      const favToRemove = favIconToRemove.closest('.fav-card');
+
+      // update .fav-icon on result card so it displays correctly and is clickable again
+      const favId = favToRemove.getAttribute('data-id')
+      const favIdPrefix = favId.split('-')[0];
+      updateFavIconOnRemove(favId, favIdPrefix);
+
 			favToRemove.remove();
       // TODO...change icon in listing back to empty heart
       // find parent container nodes and check data-id attribute and change icon.innerText to favorite_border
+   
 		
 			// reset favorites to LS
 			localStorage.setItem('faves', JSON.stringify(favoritesGridEl.innerHTML));
 		}
 	}
+}
+
+function updateFavIconOnRemove(favId, favIdPrefix) {
+  if (favIdPrefix === 'restau') {
+    const restauNodeList = restauCarouselEl.querySelectorAll('.carousel-item');
+    restauNodeList.forEach(function(restauNode) {
+      const restauNodeId = restauNode.getAttribute('data-id')
+
+      if (favId === restauNodeId) {
+        // const nodeIcon = restauNode.querySelector('.fav-icon-copy');
+        const nodeIcon = restauNode.querySelector('.fav-icon-copy') || restauNode.querySelector('.fav-icon');
+        nodeIcon.classList = 'material-icons fav-icon'
+        nodeIcon.innerText = 'favorite_border';
+      }
+    })
+  } else {
+    const eventNodeList = eventCarouselEl.querySelectorAll('.carousel-item');
+    eventNodeList.forEach(function(eventNode) {
+      const eventNodeId = eventNode.getAttribute('data-id') 
+
+      if (favId === eventNodeId) {
+        const nodeIcon = eventNode.querySelector('.fav-icon-copy') || eventNode.querySelector('.fav-icon');
+        nodeIcon.classList = 'material-icons fav-icon'
+        nodeIcon.innerText = 'favorite_border';
+      }
+    })
+  }
 }
 
 function displayErrorMsg(msg, container) {
@@ -429,7 +468,6 @@ resultsWrapperEl.addEventListener('click', removeFav);
 
 
 // TODO 
-// syncronize fav-icons on page-load and on remove 
+// syncronize fav-icons on results return and on remove 
 // clear all favs button and handler
-// make favs grid responsive
 // 
