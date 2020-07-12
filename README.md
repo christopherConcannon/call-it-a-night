@@ -5,6 +5,8 @@ Published: July 12 2020
 ## About the Application
 Call It A Night(CIAN) is a research tool for making the perfect date night possible!
 
+Visit site https://christopherconcannon.github.io/project-one/.
+
 ## How to use
 CIAN's Here & Now button will let the application get the user's location and present them with local restaurants and events that are happening right now!
 ![Here & Now Entry](./assets/images/HereNow.jpg)
