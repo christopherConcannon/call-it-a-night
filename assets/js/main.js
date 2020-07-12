@@ -470,4 +470,4 @@ resultsWrapperEl.addEventListener('click', removeFav);
 // TODO 
 // syncronize fav-icons on results return and on remove 
 // clear all favs button and handler
-// 
+// if there is only one event and you slide-click off it and no other image is there to display so you've lost your whole carousel.  possible solution...check length of events nodeList.  if < 2/3 display images as a flex row, otherwise initialize as carousel

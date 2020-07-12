@@ -130,7 +130,7 @@ span.brand-logo,
 
 .carousel {
 	height: 500px;
-	/* margin-top: -10%; */
+	margin-top: -20%;
 }
 
 .carousel .carousel-item {
@@ -177,6 +177,12 @@ i.material-icons.fav-icon-copy:hover {
 
 /* RESPONSIVENESS */
 
+@media screen and (min-width: 1200px) {
+  .carousel {
+    margin-top: -15%;
+  }
+}
+
 @media screen and (min-width: 993px) {
 
 	.brand-logo {
@@ -214,7 +220,11 @@ i.material-icons.fav-icon-copy:hover {
 
 	#favorites .card-image img {
 		height: 300px;
-	}
+  }
+  
+  .carousel {
+    margin-top: -22%;
+  }
 }
 
 @media screen and (max-width: 735px) {
@@ -252,13 +262,7 @@ i.material-icons.fav-icon-copy:hover {
 		height: 400px;
 	}
   
-  /* #favorites .card-image {
-    height: 220px;
-  }
 
-	#favorites .card-image img {
-		height: 220px;
-	} */
 }
 
 @media screen and (max-width: 601px) {
@@ -312,7 +316,7 @@ i.material-icons.fav-icon-copy:hover {
 	}
 
 	.carousel {
-		/* margin-top: -30%; */
+		margin-top: -30%;
   }
   
   #favorites .card {
