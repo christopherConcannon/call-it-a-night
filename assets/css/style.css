@@ -181,7 +181,10 @@ i.material-icons.fav-icon-copy:hover {
 
 	.brand-logo {
 		margin-left: -6.3rem;
-	}
+  }
+  #favorites {
+    width: 85%;
+  }
 }
 
 @media screen and (max-width: 960px) {
