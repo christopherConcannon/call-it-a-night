@@ -12,7 +12,7 @@ const favoritesEl = document.querySelector('#favorites');
 // carousel container divs
 const restauCarouselEl = document.querySelector('#restau-carousel');
 const eventCarouselEl = document.querySelector('#event-carousel');
-const favoritesCarouselEl = document.querySelector('#favorites-carousel');
+const favoritesGridEl = document.querySelector('#favorites-grid');
 
 // parent element for delegatation of .fav listener
 const resultsWrapperEl = document.querySelector('#results-wrapper');
@@ -188,8 +188,6 @@ function tixMasterFetch(coordObj) {
 }
 
 function displayRestauResults(restauData) {
-	console.log('getZomatoData -> nearbyRestaurants', restauData);
-
 	// populate cards
 	let innerHTML = '';
 	const index = [ 'one', 'two', 'three', 'four', 'five', 'six', 'seven' ];
@@ -197,10 +195,13 @@ function displayRestauResults(restauData) {
 		if (restauData[i]) {
 			// url encode special characters for query
 			const address = restauData[i].restaurant.location.address;
-			const encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
+      const encodedAddress = address.replace(/ /g, '%20').replace(/,/g, '%2C');
+      
+      // check if any of the data-id's are already in the favorites nodeList, if so make innerText of i.fav-icon = favorite instead  of favorite_border
 
 			innerHTML += `
-    <div href="#${index[i]}!" class="carousel-item" data-id="restau-${i + 1}">
+    <div href="#${index[i]}!" class="carousel-item" data-id="restau-${restauData[i]
+				.restaurant.id}">
     <div class="card">
       <div class="card-image">
         <img src="${restauData[i].restaurant.thumb !== ''
@@ -224,7 +225,7 @@ function displayRestauResults(restauData) {
 	restauCarouselEl.innerHTML = innerHTML;
 	// initialize Materialize Carousel
 	M.Carousel.init($('#restau-carousel.carousel'));
-	loadFavs();
+	// loadFavs();
 
 	// TODO
 	// set data-id attr for fav tracking
@@ -232,7 +233,6 @@ function displayRestauResults(restauData) {
 
 function displayEventResults(eventData) {
 	// populate cards
-	console.log('tixMasterFetch -> nearbyEvents', eventData);
 
 	// populate cards
 	let innerHTML = '';
@@ -244,7 +244,9 @@ function displayEventResults(eventData) {
 			let eventLon = eventData[i]._embedded.venues[0].location.longitude;
 
 			innerHTML += `
-    <div href="#${index[i]}!" class="carousel-item" data-id="event-${i + 1}">
+  
+    <div href="#${index[i]}!" class="carousel-item" data-id="event-${eventData[i].id}">
+
     <div class="card">
       <div class="card-image">
         <img src="${eventData[i].images[0].url}">
@@ -268,69 +270,126 @@ function displayEventResults(eventData) {
 	M.Carousel.init($('#event-carousel.carousel'));
 
 	// set data-id attr for fav tracking
-	// add event listener to fav icon...callbck addToFavs()
+	// add event listener to fav icon...callbck addFav()
 	// set data-id attr for fav tracking
-	// add event listener to fav icon...callback addToFavs()
+	// add event listener to fav icon...callback addFav()
 }
 
-function addToFavs(event) {
+function addFav(event) {
 	// if a fav-icon was clicked
 	if (event.target.closest('.fav-icon')) {
+		// make sure heading and container are visible in cases where no favorites are present on page load
+		favoritesEl.classList.remove('hide');
 		// store reference to the clicked icon
 		let newFavIcon = event.target.closest('.fav-icon');
+		// change fav-icon to show it's been selected
+		newFavIcon.innerText = 'favorite';
+
+		// update copy's class list so it won't be listened on any more, thus avoiding an unecessary event being fired and pointlessly running code up to the conditional check that is necessary in the case of a new search being performed in the same geographical area which will return the same results but now the newly generated card still has the .fav-icon class (even though a copy of it's previous rendering could already be in the favorites section) so it will fall through the cracks to the next bit of code
+		newFavIcon.classList = 'material-icons fav-icon-copy';
 		// get the clicked icon's nearest .carousel-item ancestor
 		let newFav = newFavIcon.closest('.carousel-item');
 		// get the .carousel-items id
 		let newFavId = newFav.getAttribute('data-id');
-		// clone the existing .carousel-item
-		let newFavCopy = newFav.cloneNode(true);
-		// remove active class
-		newFavCopy.classList.remove('active');
-		// set new id on copy
-		newFavCopy.setAttribute('data-id', `${newFavId}-copy`);
-		// get icon element of copy
-		let newFavCopyIcon = newFavCopy.querySelector('.fav-icon');
-		// change fav-icon to show it's been selected
-		newFavCopyIcon.innerText = 'favorite';
-		// update copy's class list so it won't be listened on
-		newFavCopyIcon.classList = 'material-icons fav-icon-copy';
-		// make heading and container are visible
-		favoritesEl.classList.remove('hide');
-		// display newFavCopy
-		favoritesCarouselEl.appendChild(newFavCopy);
-		// initialize carousel instance
-		favoritesCarouselEl.className = 'carousel';
-		M.Carousel.init($('#favorites-carousel.carousel'));
+		console.log(newFavId);
 
-		// set favorites to LS
-		localStorage.setItem('faves', JSON.stringify(favoritesEl.innerHTML));
-	} else return;
+		// CAREFUL -- BREAKING TEST CODE HERE ***************************************************************
+
+		// check if data-id attribute of clicked card is equal to one already on an item in the favorites container.
+
+		// create iterable nodeList of cards already in favorites
+		const favNodeList = favoritesGridEl.querySelectorAll('#favorites-grid .fav-card');
+		// console.log(favNodeList);
+
+		let idCheck = '';
+		// loop over nodeList and if data-id of clicked on card does not match data-id of card already in favorites, copy and append it
+		favNodeList.forEach(function(favNode) {
+			// get data-id of favorite card in current iteration
+			let favNodeId = favNode.getAttribute('data-id');
+			// console.log(favNodeId);
+			// check if it matches clicked on card's data-id
+			if (favNodeId === newFavId) {
+				idCheck = 'duplicate';
+			}
+		});
+
+		if (idCheck !== 'duplicate') {
+			//  clone the existing .carousel-item
+			let newFavCopy = newFav.cloneNode(true);
+			// remove active class
+			newFavCopy.classList = 'col s6 fav-card';
+			// set new id on copy
+			// newFavCopy.setAttribute('data-id', `${newFavId}`);
+			// get icon element of copy
+			newFavCopy.removeAttribute('style');
+			newFavCopy.removeAttribute('href');
+			// let newFavCopyIcon = newFavCopy.querySelector('.fav-icon');
+			// // change fav-icon to show it's been selected
+			// newFavCopyIcon.innerText = 'favorite';
+			// // update copy's class list so it won't be listened on
+			// newFavCopyIcon.classList = 'material-icons fav-icon-copy';
+
+			// display newFavCopy
+			favoritesGridEl.appendChild(newFavCopy);
+
+			// set favorites to LS
+			localStorage.setItem('faves', JSON.stringify(favoritesGridEl.innerHTML));
+		}
+
+		//  BREAKING CODE ABOVE ***********************************************************************
+
+		// let newFavCopy = newFav.cloneNode(true);
+		// // remove active class
+		// newFavCopy.classList = 'col s3 fav-card';
+		// // set new id on copy
+		// // newFavCopy.setAttribute('data-id', `${newFavId}`);
+		// // get icon element of copy
+		// newFavCopy.removeAttribute('style');
+		// newFavCopy.removeAttribute('href');
+		// // let newFavCopyIcon = newFavCopy.querySelector('.fav-icon');
+		// // // change fav-icon to show it's been selected
+		// // newFavCopyIcon.innerText = 'favorite';
+		// // // update copy's class list so it won't be listened on
+		// // newFavCopyIcon.classList = 'material-icons fav-icon-copy';
+
+		// // display newFavCopy
+		// favoritesGridEl.appendChild(newFavCopy);
+
+		// // set favorites to LS
+		// localStorage.setItem('faves', JSON.stringify(favoritesGridEl.innerHTML));
+
+		// if a fav-icon-copy was clicked
+  } else return false
+  // else if (event.target.closest('.fav-icon-copy')) {
+	// 	// store reference to the clicked icon
+	// 	let favIconToRemove = event.target.closest('.fav-icon-copy');
+	// 	if (favIconToRemove.closest('.fav-card')) {
+	// 		let favToRemove = favIconToRemove.closest('.fav-card');
+	// 		favToRemove.remove();
+  //     // TODO...change icon in listing back to empty heart
+  //     // find parent container nodes and check data-id attribute and change icon.innerText to favorite_border
+		
+	// 		// reset favorites to LS
+	// 		localStorage.setItem('faves', JSON.stringify(favoritesGridEl.innerHTML));
+	// 	}
+	// }
 }
 
-// function addToFavs(newFavCopy) {
-// 	favsArr.push(newFavCopy.innerHTML);
-// 	localStorage.setItem('faves', JSON.stringify(favsArr));
-// }
-
-// function addToFavs(newFavCopy) {
-// 	favsArr.push(newFavCopy);
-// 	localStorage.setItem('faves', JSON.stringify(favsArr));
-// 	displayFavs(favsArr);
-
-// 	// favsArr.push(cardEl.data-id === x)
-// 	// localStorage.setItem('faves', favsArr);
-// 	// displayFavs();
-// }
-
-// function displayFavs(favsArr) {
-// 	for (let i = 0; i < favsArr.length; i++) {
-// 		favoritesCarouselEl.appendChild(favsArr[i]);
-// 		// style the icon to show its selected (heart filled in)
-// 		// event listener on icon to remove from favs
-// 	}
-// 	favoritesCarouselEl.className = 'carousel';
-// 	M.Carousel.init($('#favorites-carousel.carousel'));
-// }
+function removeFav() {
+  if (event.target.closest('.fav-icon-copy')) {
+		// store reference to the clicked icon
+		let favIconToRemove = event.target.closest('.fav-icon-copy');
+		if (favIconToRemove.closest('.fav-card')) {
+			let favToRemove = favIconToRemove.closest('.fav-card');
+			favToRemove.remove();
+      // TODO...change icon in listing back to empty heart
+      // find parent container nodes and check data-id attribute and change icon.innerText to favorite_border
+		
+			// reset favorites to LS
+			localStorage.setItem('faves', JSON.stringify(favoritesGridEl.innerHTML));
+		}
+	}
+}
 
 function displayErrorMsg(msg, container) {
 	console.log(msg);
@@ -343,23 +402,18 @@ function displayErrorMsg(msg, container) {
 }
 
 function loadFavs() {
-	let favsInnerHTML = localStorage.getItem('faves');
-	if (!favsInnerHTML) {
+	let favsGridInnerHTML = localStorage.getItem('faves');
+	if (!favsGridInnerHTML) {
 		return false;
 	}
 
-	favsInnerHTML = JSON.parse(favsInnerHTML);
+	favsGridInnerHTML = JSON.parse(favsGridInnerHTML);
 
 	favoritesEl.classList.remove('hide');
-	favoritesEl.innerHTML = favsInnerHTML;
-	M.Carousel.init($('#favorites-carousel.carousel'));
-	// need to remove class active on all but first child
-	// const initFavs = document.querySelector('.fav-icon');
-	// console.log(initFavs);
-	// initFavs.click();
+	favoritesGridEl.innerHTML = favsGridInnerHTML;
 }
 
-// loadFavs();
+loadFavs();
 
 // ADD EVENT LISTENERS
 hereNowBtnEl.addEventListener('click', getUserCoords);
@@ -367,5 +421,15 @@ hereNowBtnEl.addEventListener('click', getUserCoords);
 // searchFormEl.addEventListener('submit', getCustomCoords);
 searchFormSubmitBtnEl.addEventListener('click', getCustomCoords);
 
-// event listener for fav icon
-resultsWrapperEl.addEventListener('click', addToFavs);
+// event listener for .fav-icon
+resultsWrapperEl.addEventListener('click', addFav);
+
+// // event listener for .fav-icon-copy
+resultsWrapperEl.addEventListener('click', removeFav);
+
+
+// TODO 
+// syncronize fav-icons on page-load and on remove 
+// clear all favs button and handler
+// make favs grid responsive
+// 
