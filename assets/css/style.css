@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Open+Sans&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap'); */
 
 html {
 	font-size: 16px;
@@ -15,7 +18,7 @@ body {
 #hero h1,
 span.brand-logo,
 #results-wrapper h5 {
-	font-family: 'Abril Fatface', cursive;
+  font-family: 'Abril Fatface', cursive;
 }
 
 #hero p {
@@ -49,6 +52,7 @@ span.brand-logo,
 .btn-blue {
 	border-color: #2196f3;
 }
+
 .btn-blue:hover {
 	background-color: #2196f3;
 }
@@ -57,6 +61,7 @@ span.brand-logo,
 	border-color: #f44336;
 	color: #f44336;
 }
+
 .modal-footer .btn-red:hover {
 	background-color: #f44336;
 	color: #fff;
@@ -74,6 +79,7 @@ span.brand-logo,
 	overflow-y: visible;
 	width: 80%;
 }
+
 .modal .modal-footer .modal-close {
 	margin-right: 1rem;
 }
@@ -159,11 +165,22 @@ i.material-icons.fav-icon-copy:hover {
   margin: 0 auto;
 }
 
+#favorites .fav-card {
+  padding-left: 2rem;
+}
 
-#favorites .card {
+#favorites .fav-card:nth-child(odd) {
+  padding-right: 2rem;
+}
+
+#favorites .fav-card .card {
   width: 400px;
   height: 535px;
-  margin: 2rem auto;
+  margin: 2rem 0;
+}
+
+#favorites .fav-card:nth-child(odd) .card {
+  margin-left: auto;
 }
 
 .error-msg {
@@ -171,6 +188,7 @@ i.material-icons.fav-icon-copy:hover {
 	margin-top: 2rem;
 	font-size: 2rem;
 }
+
 .err-img {
 	font-size: 10rem;
 }
@@ -233,6 +251,7 @@ i.material-icons.fav-icon-copy:hover {
     height: 333px;
     margin: 1rem auto;
   }
+
   #favorites .card-image {
     height: 220px;
   }
@@ -244,6 +263,7 @@ i.material-icons.fav-icon-copy:hover {
 
 /* NOTE...CHANGES SIZE OF CAROUSEL ITEMS ON LARGER SCREENS.  DUE TO CAROUSEL.INIT DOES NOT 'RESIZE' WELL BUT ON PAGE LOAD LOOKS GOOD ON DIFFERENT SCREEN TYPES.  HOW TO FIX WITH JS? */
 @media screen and (min-width: 601px) {
+
 	.datepicker-controls,
 	.datepicker-table,
 	.datepicker-footer {
@@ -252,7 +272,8 @@ i.material-icons.fav-icon-copy:hover {
 
 	.carousel {
 		height: 700px;
-	}
+  }
+  
 	.carousel .carousel-item {
 		width: 400px;
 		height: 400px;
@@ -260,12 +281,12 @@ i.material-icons.fav-icon-copy:hover {
 
   .card-image {
 		height: 400px;
-	}
+  }
   
-
 }
 
 @media screen and (max-width: 601px) {
+
 	#hero h1 {
 		margin-bottom: 3rem;
 	}
@@ -273,10 +294,12 @@ i.material-icons.fav-icon-copy:hover {
 	#hero h1,
 	span.brand-logo {
 		font-size: 2rem;
-	}
+  }
+  
 	#hero p {
 		font-size: 1rem;
-	}
+  }
+  
 	.btn {
 		font-size: .7rem;
 	}
@@ -327,15 +350,16 @@ i.material-icons.fav-icon-copy:hover {
 
 	#favorites .card .card-image img {
 		height: 100%;
-	}
+  }
+  
 }
 
 @media screen and (max-width: 550px) {
+
   .row .col.s6.fav-card {
     width: 100%;
   }
-
-   
+ 
   #favorites .card {
     margin: 1rem auto;
   }
@@ -343,19 +367,19 @@ i.material-icons.fav-icon-copy:hover {
 }
 
 @media screen and (max-width: 335px) {
+
 	.datepicker-modal {
 		transform: scaleX(.7) scaleY(.7) !important;
 	}
 
 	.timepicker-plate {
 		transform: scale(0.6);
-	}
+  }
+  
 	.timepicker-clear {
 		display: none;
-	}
+  }
+  
 }
 
 /* TODO */
-/* GET RID OF SPACE BETWEEN RESULTS CAROUSELS AND THEIR RESPECTIVE HEADINGS!!!! */
-/* check more responsiveness */
-/* fonts */

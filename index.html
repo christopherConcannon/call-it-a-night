@@ -40,8 +40,8 @@
               </form>
             </div>
             <div class="modal-footer">
-              <!-- add form attr to associate button with form though button is not in form -->
               <button  class="btn btn-red modal-action modal-close waves-effect waves-red">Close</button>
+              <!-- add form attr to associate button with form though button is not in form so we can listen for form submit rather than button click.  This setup did not submit form field data as expected with event.prefault in JS to prevent page reload-->
               <!-- <button form="search" id="search-form-submit" class="btn modal-action waves-effect waves-green">Search</button> -->
               <button id="search-form-submit" class="btn btn-green green-text modal-action modal-close waves-effect waves-green">Search</button>
             </div>
@@ -57,11 +57,6 @@
     <!-- RESULTS VIEW - HIDE ON PAGE LOAD -->
   
   <div id="results-wrapper" class="results-wrapper center hide">
-    <!--   
-      <div id="results-wrapper" class="results-wrapper center hide">
-        <div class="container">
-          <h1 class="center white-text">Call It A Night</h1>
-          <a href="index.html" class="btn back-btn">New Search</a> -->
 
       <div class="navbar-fixed">
         <nav>
@@ -80,7 +75,6 @@
           <h5 class="white-text">RESTAURANTS</h5>
           <div id="restau-err-msg" class="error-msg">
           </div>
-          <!-- <div id="restau-carousel" class="carousel"> -->
           <div id="restau-carousel" class="carousel">
              <!-- dynamic API content displayed here -->
           </div>
@@ -105,9 +99,6 @@
              <!-- dynamic content displayed here -->
           </div>  
         </section> <!-- close section#restaurants -->
-
-        <!-- close results div.container-->
-      <!-- </div>  -->
 
     </div> <!-- close div#results-wrapper -->
 
