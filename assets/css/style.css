@@ -350,6 +350,10 @@ i.material-icons.fav-icon-copy:hover {
 	.carousel {
 		margin-top: -30%;
   }
+
+  #favorites .fav-card {
+    padding-right: 2rem;
+}
   
   #favorites .fav-card .card {
     width: 225px;
