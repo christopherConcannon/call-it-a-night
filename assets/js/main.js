@@ -33,9 +33,9 @@ function getUserCoords() {
 		// current moment object
 		coordObj.dateTimeStart = moment().format('YYYY-MM-DDTHH:mm:ss');
 		// // make range 6 days for testing
-		// coordObj.dateTimeEnd = moment().add(6, 'd').format('YYYY-MM-DDTHH:mm:ss');
+		coordObj.dateTimeEnd = moment().add(6, 'd').format('YYYY-MM-DDTHH:mm:ss');
 		// make range 24 hours for deployable version
-		coordObj.dateTimeEnd = moment().add(24, 'h').format('YYYY-MM-DDTHH:mm:ss');
+		// coordObj.dateTimeEnd = moment().add(24, 'h').format('YYYY-MM-DDTHH:mm:ss');
 		// call function to reveal container that will hold results.  pass coords down to child restau/event display functions
 		revealResultsContainer(coordObj);
 	}
@@ -85,13 +85,13 @@ function getCustomCoords(event) {
 				true
 			).format('YYYY-MM-DDTHH:mm:ss');
 			// // make range 6 days for testing
-			// coordObj.dateTimeEnd = moment(dateTimeStart, 'MMM D, YYYY HH:mm A', true)
-			// 	.add(6, 'd')
-			// 	.format('YYYY-MM-DDTHH:mm:ss');
-			// make range 12 hours for deployable version
 			coordObj.dateTimeEnd = moment(dateTimeStart, 'MMM D, YYYY HH:mm A', true)
-				.add(12, 'h')
+				.add(6, 'd')
 				.format('YYYY-MM-DDTHH:mm:ss');
+			// make range 12 hours for deployable version
+			// coordObj.dateTimeEnd = moment(dateTimeStart, 'MMM D, YYYY HH:mm A', true)
+			// 	.add(12, 'h')
+			// 	.format('YYYY-MM-DDTHH:mm:ss');
 			revealResultsContainer(coordObj);
 		});
 }
@@ -154,7 +154,7 @@ function tixMasterFetch(coordObj) {
 	const tixAPIkey = 'wEkOlTafP8T1DEZZ4GWREy4AwGrWvuBx';
 
   // format API url including comma-separated date/time range parameter
-  const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=1&localStartDateTime=${dateTimeStart},${dateTimeEnd}&apikey=${tixAPIkey}`;
+  const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&localStartDateTime=${dateTimeStart},${dateTimeEnd}&apikey=${tixAPIkey}`;
   
   // wide parameter ranges for testing purposes
 	// const tixMasterAPIUrl = `https://app.ticketmaster.com/discovery/v2/events.json?geoPoint=${geoPoint}&radius=10&localStartDateTime=${dateTimeStart},${dateTimeEnd}&apikey=${tixAPIkey}`;
@@ -389,6 +389,8 @@ function displayErrorMsg(msg, container) {
     <div class="err-img">
       😭
     </div>`;
+  // remove empty space
+  container.nextElementSibling.classList.add('hide');
 }
 
 function loadFavs() {

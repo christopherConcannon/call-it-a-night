@@ -119,6 +119,11 @@ span.brand-logo,
 	padding: 0;
 }
 
+.timepicker-span-am-pm {
+  display: flex;
+  justify-content: space-evenly;
+}
+
 .results-wrapper {
 	padding-bottom: 5rem;
 	background-color: rgba(48, 48, 48, 0.6);
@@ -264,11 +269,11 @@ i.material-icons.fav-icon-copy:hover {
 /* NOTE...CHANGES SIZE OF CAROUSEL ITEMS ON LARGER SCREENS.  DUE TO CAROUSEL.INIT DOES NOT 'RESIZE' WELL BUT ON PAGE LOAD LOOKS GOOD ON DIFFERENT SCREEN TYPES.  HOW TO FIX WITH JS? */
 @media screen and (min-width: 601px) {
 
-	.datepicker-controls,
+	/* .datepicker-controls,
 	.datepicker-table,
 	.datepicker-footer {
 		width: 80%;
-	}
+	} */
 
 	.carousel {
 		height: 700px;
@@ -314,8 +319,12 @@ i.material-icons.fav-icon-copy:hover {
 
 	.timepicker-display-am-pm {
 		font-size: 1rem;
-		bottom: .5rem;
-	}
+    bottom: .5rem;
+  }
+  
+  .timepicker-span-am-pm {
+    display: block;
+  }
 
 	.timepicker-plate {
 		transform: scale(0.8);
