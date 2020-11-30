@@ -5,7 +5,7 @@ Published: July 12 2020
 ## About the Application
 Call It A Night(CIAN) is a research tool for making the perfect date night possible!
 
-Visit site https://christopherconcannon.github.io/project-one/.
+Visit site [here](https://christopherconcannon.github.io/call-it-a-night)
 ![](./assets/images/screenshot.png)
 
 ## How to use
